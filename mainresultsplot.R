@@ -356,6 +356,7 @@ p5<-ggplot(data = dp5) +
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
+  coord_cartesian(ylim = c(0,2))+
   scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("E: Parameter estimates")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),

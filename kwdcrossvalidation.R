@@ -49,7 +49,7 @@ set.seed(clusterid) #set seed as the clusterid
 #Compile Experimental Data
 ##############################################################################################################
 #only keep people who have completed the task
-data <-read.csv("/home/ucabchu/Scratch/kidswithgrids/kwg.csv")
+data <-read.csv("kwgdata.csv")
 
 #sourced from dataMunging.R
 
