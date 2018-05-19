@@ -126,7 +126,7 @@ pall<-ggplot(data = dp1) +
   scale_fill_manual(values = c(cbPalette[c(7,6)], "grey40"))+
   scale_color_manual(values = c(cbPalette[c(7,6)], "grey40"))+
   #labs
-  xlab("Sampling strategy")+ylab(expression("Predictive accuracy:"~r^2))+
+  xlab("Sampling strategy")+ylab(expression("Predictive accuracy:"~R^2))+
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
@@ -143,7 +143,7 @@ pall
 
 #parameters
 dp<-data.frame(estimate=exp(c(du$par1, du$par2,du$par3)), id=rep(du$id, 3), param=rep(c("lambda", "beta", "tau"), each=nrow(du)))
-dp<-subset(dp, estimate<3)
+dp<-subset(dp, estimate<5)
 #condition and age
 dp$condition<-0
 dp$age<-0
@@ -199,7 +199,7 @@ p2<-ggplot(data = dp2) +
         panel.spacing.x=unit(0.2, "lines"),
         panel.spacing.y=unit(1, "lines"),
         plot.title = element_text(family = "sans", margin=margin(0,0,0,0)),
-        plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
+        plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))+ylim(c(0,3))
 p2
 
 
@@ -217,7 +217,7 @@ dp$Age<-dp$age
 dp$Age<-factor(dp$Age, levels=c("7-8", "9-11", ">18"))
 dp$Condition<-factor(dp$condition, levels=c("Rough", "Smooth"))
 dp$param<-factor(dp$param, levels=(c("lambda", "tau")))
-dp<-subset(dp, estimate<3)
+dp<-subset(dp, estimate<5)
 
 dp3<-ddply(dp, ~Condition+Age+param, summarize,
            d_ymin = max(min(estimate), quantile(estimate, 0.25) - 1.5 * IQR(estimate)), 
@@ -260,7 +260,7 @@ p3<-ggplot(data = dp3) +
         panel.spacing.x=unit(0.2, "lines"),
         panel.spacing.y=unit(1, "lines"),
         plot.title = element_text(family = "sans", margin=margin(0,0,0,0)),
-        plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
+        plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))+ylim(c(0,3))
 p3
 
 

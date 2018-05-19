@@ -1,0 +1,245 @@
+---
+title: "Reproducible code for modeling results"
+author: "Eric Schulz"
+date: "May 15, 2018"
+output: html_document
+---
+
+###Load packages and take a first look at the data
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Let's first load the necessary packages, plyr for data handling, lsr to calclulate Cohen's d, and BayesFactor for the BF for a t-test.
+
+```{r, results = "hide", message=FALSE}
+packages <- c('plyr', 'lsr', 'BayesFactor')
+lapply(packages, require, character.only = TRUE)
+```
+Let's also load the data and have a look at it.
+
+```{r}
+#Experimental data
+dat<-read.csv("kwgdata.csv")
+#show first 5 entries
+head(dat, 5)
+#GP-UCB results
+drbf<-read.csv("rbf.csv")
+#show first 5 entries
+head(drbf, 5)
+#Mean Tracker results
+dbmt<-read.csv("bmt.csv")
+#show first 5 entries
+head(dbmt, 5)
+```
+
+###Create variables for predictive performance comparison
+
+First, let's calculate the r^2-values of the predictive performance. This is based on 25 trials predicting one of 64 options.
+```{r}
+#get pseudo-r2
+drbf$r2<-(1-drbf$X.2/(-25*log(1/64)))
+dbmt$r2<-(1-dbmt$X.2/(-25*log(1/64)))
+
+```
+
+Next, we create a data frame with age and condition for comparison. 
+
+```{r}
+#get everyones agegroup and condition
+dat<-ddply(dat, ~id, summarize, age=agegroup[1], cond=cond[1])
+#mark model names
+##RBF is the GP-UCB (has a RBF kernel)
+drbf$model<-"RBF"
+##BMT is the Bayesian Mean Tracker
+dbmt$model<-"BMT"
+#combine to new data frame
+d<-data.frame(r2=c(drbf$r2, dbmt$r2), model=c(drbf$model, dbmt$model), id=c(drbf$id, dbmt$id))
+
+#initialize
+d$condition<-0
+d$age<-0
+
+#loop through d to match age and condition
+for (i in 1:nrow(d)){
+  d$condition[i]<-paste(dat$cond[d$id[i]==dat$id])
+  d$age[i]<-paste(dat$age[d$id[i]==dat$id])
+}
+
+```
+
+###Compare model performance
+
+
+Let's calculate the differences between the two models.
+```{r}
+#get model performance per id while keeping age and condition in the frame
+dm<-ddply(d, ~model+id+age+condition, summarize, mu=mean(r2))
+
+#test the difference overall
+##t-test
+t.test(subset(dm, model=="RBF")$mu-subset(dm, model=="BMT")$mu, var.equal = TRUE)
+##effect-size
+cohensD(subset(dm, model=="RBF")$mu-subset(dm, model=="BMT")$mu)
+##Bayes factor
+ttestBF(subset(dm, model=="RBF")$mu-subset(dm, model=="BMT")$mu)
+```
+
+The GP-UCB model performed a lot better than the Bayesian mean tracker. Now let's check what this looks like for the different age groups.
+```{r}
+#test the difference for adults
+dm<-ddply(subset(d,age==">18"),  ~model+id+age+condition, summarize, mu=mean(r2))
+t.test(subset(dm, model=="RBF")$mu-subset(dm, model=="BMT")$mu, var.equal = TRUE)
+cohensD(subset(dm, model=="RBF")$mu-subset(dm, model=="BMT")$mu)
+ttestBF(subset(dm, model=="RBF")$mu-subset(dm, model=="BMT")$mu)
+
+#test the difference for older children
+dm<-ddply(subset(d,age=="9-11"),  ~model+id+age+condition, summarize, mu=mean(r2))
+t.test(subset(dm, model=="RBF")$mu-subset(dm, model=="BMT")$mu, var.equal = TRUE)
+cohensD(subset(dm, model=="RBF")$mu-subset(dm, model=="BMT")$mu)
+ttestBF(subset(dm, model=="RBF")$mu-subset(dm, model=="BMT")$mu)
+
+#test the difference for younger children
+dm<-ddply(subset(d,age=="7-8"),  ~model+id+age+condition, summarize, mu=mean(r2))
+t.test(subset(dm, model=="RBF")$mu-subset(dm, model=="BMT")$mu, var.equal = TRUE)
+cohensD(subset(dm, model=="RBF")$mu-subset(dm, model=="BMT")$mu)
+ttestBF(subset(dm, model=="RBF")$mu-subset(dm, model=="BMT")$mu)
+
+```
+So GP-UCB performs better than the Meant Tracking Model for all age groups.
+
+Let's check if GP-UCB's performance depends on participants' age.
+```{r}
+#get only RBF for the different age groups
+dm<-ddply(subset(d,model=="RBF"), ~id+age+condition, summarize, mu=mean(r2))
+
+#difference of GP-UCB between adults and older children
+t.test(subset(dm, age==">18")$mu, subset(dm, age=="9-11")$mu, var.equal = TRUE)
+cohensD(subset(dm, age==">18")$mu, subset(dm, age=="9-11")$mu)
+ttestBF(subset(dm, age==">18")$mu, subset(dm, age=="9-11")$mu)
+
+#difference of GP-UCB between younger and older children
+t.test(subset(dm, age=="7-8")$mu, subset(dm, age=="9-11")$mu, var.equal = TRUE)
+cohensD(subset(dm, age=="7-8")$mu, subset(dm, age=="9-11")$mu)
+ttestBF(subset(dm, age=="7-8")$mu, subset(dm, age=="9-11")$mu)
+
+```
+So GP-UCB performed better for adults than for older children, and better for older children than for younger children.
+
+###Parameter comparison
+To compare the different parameters, we first have to create a data set that contains all estimates.
+
+```{r}
+
+#create a data frame for parameters of GP-UCB
+dp<-data.frame(estimate=exp(c(drbf$par1, drbf$par2,drbf$par3)), 
+               id=rep(drbf$id, 3),
+               param=rep(c("lambda", "beta", "tau"), each=nrow(drbf)))
+
+#initialize condition and age
+dp$condition<-0
+dp$age<-0
+
+#get condition and age
+for (i in 1:nrow(dp)){
+  dp$condition[i]<-paste(dat$cond[dp$id[i]==dat$id])
+  dp$age[i]<-paste(dat$age[dp$id[i]==dat$id])
+}
+```
+Next, we need the Bayesian version of the Mann-Whitney-U test. We adapted this code from Eric Jan Wagenmakers.
+```{r}
+#Source Mann-Whitney-U-BF
+source("mannwhitbf.R")
+```
+
+So let's first check for differences in lambda.
+```{r}
+#LAMBDA:
+#get the estimates
+dlambda<-subset(dp, param=="lambda")
+#mean per id as well as age
+dage<-ddply(dlambda, ~id+age,summarize, mu=mean(estimate))
+#Mann-Whitney-U of adults vs. older children
+wilcox.test(subset(dage, age==">18")$mu, subset(dage, age=="9-11")$mu)
+#get a subset
+dd<-subset(dage, age %in% c(">18", "9-11"))
+#rank correlation as effect size
+cor(ifelse(dd$age==">18",1,0), dd$mu, method="kendall")
+#Bayes Factor
+outsim<-rankSumGibbsSampler(subset(dd, age==">18")$mu, subset(dd, age=="9-11")$mu, progBar = FALSE)
+#get demsity
+dense<- density(outsim$deltaSamples)
+#approximate
+ddense <- with(dense, approxfun(x, y, rule=1))
+#Savage-Dickey-approximation
+BF<-dcauchy(0, location = 0, scale = 1/sqrt(2), log = FALSE)/ddense(0)
+#print
+print(BF)
+
+#Mann-Whitney-U of younger vs. older children
+wilcox.test(subset(dage, age=="9-11")$mu, subset(dage, age=="7-8")$mu)
+#subset of data frame only with kids
+dd<-subset(dage, age %in% c("7-8", "9-11"))
+#rank correlation of effect size
+cor(ifelse(dd$age=="9-11",1,0), dd$mu, method="kendall")
+#Bayes Factor
+outsim<-rankSumGibbsSampler(subset(dd, age=="7-8")$mu, subset(dd, age=="9-11")$mu, progBar = FALSE)
+dense<- density(outsim$deltaSamples)
+ddense <- with(dense, approxfun(x, y, rule=1))
+BF<-dcauchy(0, location = 0, scale = 1/sqrt(2), log = FALSE)/ddense(0)
+print(BF)
+```
+So there is a clear difference between adults and older children as adults generalize more. There is no difference between older and younger children in how much they generalize.
+
+Let's check out directed exploration next.
+```{r}
+dbeta<-subset(dp, param=="beta")
+#mean per id and age
+dage<-ddply(dbeta, ~id+age,summarize, mu=mean(estimate))
+#Mann-Whitney-U test for adults vs. old kids
+wilcox.test(subset(dage, age==">18")$mu, subset(dage, age=="9-11")$mu)
+#subset of data frame
+dd<-subset(dage, age %in% c(">18", "9-11"))
+#rank correlation as effect size
+cor(ifelse(dd$age==">18",1,0), dd$mu, method="kendall")
+#get Bayes Factor
+outsim<-rankSumGibbsSampler(subset(dd, age==">18")$mu, subset(dd, age=="9-11")$mu, progBar = FALSE)
+hist(outsim$deltaSamples)
+dense<- density(outsim$deltaSamples)
+ddense <- with(dense, approxfun(x, y, rule=1))
+#problem is that the effect is so big, it can't estimate the density at x=0
+#we therefore use the even weaeker x=0.5 to approximate
+#it's already much more than 100 for this already, so doesn't matter too much
+BF<-dcauchy(0, location = 0, scale = 1/sqrt(2), log = FALSE)/ddense(.05)
+print(BF)
+
+#Mann-Whitney-U 
+wilcox.test(subset(dage, age=="9-11")$mu, subset(dage, age=="7-8")$mu)
+#subset of children
+dd<-subset(dage, age %in% c("7-8", "9-11"))
+#rank correlation for effect size
+cor(ifelse(dd$age=="9-11",1,0), dd$mu, method="kendall")
+#Bayes Factor
+outsim<-rankSumGibbsSampler(subset(dd, age=="7-8")$mu, subset(dd, age=="9-11")$mu, progBar = FALSE)
+dense<- density(outsim$deltaSamples)
+ddense <- with(dense, approxfun(x, y, rule=1))
+BF<-dcauchy(0, location = 0, scale = 1/sqrt(2), log = FALSE)/ddense(0)
+print(BF)
+
+```
+Older children apply more directed exploration than adults. There is no difference between older and younger children in their directed exploration parameter.
+
+Finally, let's check for differences in random exploration.
+```{r}
+#tau-parameter
+dtau<-subset(dp, param=="tau")
+#get per age
+dage<-ddply(dtau, ~id+age,summarize, mu=mean(estimate))
+#do ranks
+#ANOVA is impossible so, we report the biggest BF, which was for 9-11 vs adults
+outsim<-rankSumGibbsSampler(subset(dage, age=="9-11")$mu, subset(dage, age==">18")$mu, progBar = FALSE)
+dense<- density(outsim$deltaSamples)
+ddense <- with(dense, approxfun(x, y, rule=1))
+BF<-dcauchy(0, location = 0, scale = 1/sqrt(2), log = FALSE)/ddense(0)
+print(BF)
+```
+There is no difference in participants' random exploration parameter.

@@ -33,13 +33,15 @@ dd$model<-factor(dd$model, levels=(c("GP", "MT")))
 library(ggplot2)
 fontsize<-14
 cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+names(dd)
+dd<-ddply(dd, ~id+model+producing, r2=mean(r2))
 p1<-ggplot(data = dp1) +
   #boxplot with given values, we only need half of it
   geom_boxplot(aes(x = as.numeric(model)-0.2, ymin = d_lower, ymax = d_upper, lower = d_lower, 
                    middle = d_middle, upper = d_upper, width = 2 * 0.2, fill = model), stat = "identity") +
   #jitter of raw data points, needs the full data frame
   geom_jitter(data=dd, aes(x = as.numeric(model) + 0.2,  y = r2,  color = model), 
-              width = 0.2 - 0.25 * 0.2, height = 0, size=0.1)+
+              width = 0.2 - 0.25 * 0.2, height = 0, size=1)+
   #vertical segment
   geom_segment(aes(x = as.numeric(model), y = d_ymin, xend = as.numeric(model), yend = d_ymax)) +
   geom_point(aes(x = as.numeric(model)-0.2, y = mu), shape=23, size=3, fill="white", color="black") +

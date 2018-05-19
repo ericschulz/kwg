@@ -11,7 +11,7 @@ dat$agegroup<-ifelse(dat$age<9, "7-8", dat$age)
 dat$agegroup<-ifelse(dat$age>=9 & dat$age <12, "9-11", dat$agegroup)
 dat$agegroup<-ifelse(dat$age>18, ">18", dat$agegroup)
 dat<-ddply(dat, ~id, summarise, agegroup=agegroup[1])
-
+fontsize<-16
 #First plot, intercept
 p1<-ggplot(data.frame(x = c(15, 50)), aes(x)) + 
   mapply(function(mean, sd, col) {
@@ -26,6 +26,7 @@ p1<-ggplot(data.frame(x = c(15, 50)), aes(x)) +
   scale_x_continuous(expand = c(0, 0))+
   scale_y_continuous(expand = c(0, 0))+
   ggtitle("Mean")+xlab(expression(theta[0]))+
+  theme(text = element_text(size=fontsize,  family="sans"))+
   ylab("Density")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
@@ -48,6 +49,7 @@ p2<-ggplot(data.frame(x = c(-5, 10)), aes(x)) +
   theme_minimal()+
   scale_x_continuous(expand = c(0, 0))+
   scale_y_continuous(expand = c(0, 0))+
+  theme(text = element_text(size=fontsize,  family="sans"))+
   ggtitle("Trials")+xlab(expression(theta[1]))+
   ylab("Density")+
   #various theme changes including reducing white space and adding axes
@@ -69,6 +71,7 @@ p3<-ggplot(data.frame(x = c(-12, 12)), aes(x)) +
   sd = dm$sd[164:323])+
   stat_function(fun = dnorm, args = list(mean = dm$mean[2], sd = dm$sd[2]), col = "red")+
   theme_minimal()+
+  theme(text = element_text(size=fontsize,  family="sans"))+
   scale_x_continuous(expand = c(0, 0))+
   scale_y_continuous(expand = c(0, 0))+
   ggtitle("Rounds")+xlab(expression(theta[2]))+

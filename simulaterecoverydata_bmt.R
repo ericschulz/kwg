@@ -1,4 +1,4 @@
-#Simulation of learning curves
+#Simulation of BMT data
 #Eric Schulz, March 2018
 
 #housekeeping
@@ -61,24 +61,24 @@ dat<-subset(dat, age>=7)
 dat$id<-rep(1:160, each=64*8)
 
 #get the RBF results
-drbf<-read.csv("bmt.csv")
+dbmt<-read.csv("bmt.csv")
 
-drbf$lambda<-ave(drbf$par1, drbf$id, FUN=function(x){mean(x[exp(x)<5])})
-drbf$beta<-ave(drbf$par2, drbf$id, FUN=function(x){mean(x[exp(x)<5])})
-drbf$tau<-ave(drbf$par3, drbf$id, FUN=function(x){mean(x[exp(x)<5])})
-drbf$lambda<-ifelse(is.na(drbf$lambda), mean(drbf$lambda, na.rm=TRUE), drbf$lambda)
-drbf$beta<-ifelse(is.na(drbf$beta), mean(drbf$beta, na.rm=TRUE), drbf$beta)
-drbf$tau<-ifelse(is.na(drbf$tau), mean(drbf$tau, na.rm=TRUE), drbf$tau)
+dbmt$error<-ave(dbmt$par1, dbmt$id, FUN=function(x){mean(x[exp(x)<5])})
+dbmt$beta<-ave(dbmt$par2, dbmt$id, FUN=function(x){mean(x[exp(x)<5])})
+dbmt$tau<-ave(dbmt$par3, dbmt$id, FUN=function(x){mean(x[exp(x)<5])})
+dbmt$error<-ifelse(is.na(dbmt$error), mean(dbmt$error, na.rm=TRUE), dbmt$error)
+dbmt$beta<-ifelse(is.na(dbmt$beta), mean(dbmt$beta, na.rm=TRUE), dbmt$beta)
+dbmt$tau<-ifelse(is.na(dbmt$tau), mean(dbmt$tau, na.rm=TRUE), dbmt$tau)
 
-dd<-ddply(drbf, ~id,summarize, tau=mean(exp(tau)),
-          beta=mean(exp(beta)), lambda=mean(exp(lambda)))
+dd<-ddply(dbmt, ~id,summarize, tau=mean(exp(tau)),
+          beta=mean(exp(beta)), error=mean(exp(error)))
 write.csv(dd, "bmtucbparams.csv")
 #lambda
-dat$lambda<-rep(drbf$lambda, each=64)
+dat$error<-rep(dbmt$error, each=64)
 #beta
-dat$beta<-rep(drbf$beta, each=64)
+dat$beta<-rep(dbmt$beta, each=64)
 #tau
-dat$tau<-rep(drbf$tau, each=64)
+dat$tau<-rep(dbmt$tau, each=64)
 
 #frame to collect observations
 dcollect<-data.frame(id=numeric(), age=numeric(), condition=numeric(), round=numeric(), trial=numeric(), x=numeric(), y=numeric(), z=numeric())
@@ -97,19 +97,21 @@ for (nid in 1:160){
     #X-start, i.e. all possible observations
     Xstar<-as.matrix(dp[,1:2])
     #get lambda
-    lambda<-exp(dp$lambda[1])
+    error<-exp(dp$error[1])
     #get beta
     beta<-exp(dp$beta[1])
     #get tau
     tau<-exp(dp$tau[1])
     #create a parameter vector
-    parVec <- c(lambda, lambda, 1, .0001) 
+    parVec <- c(error) 
     #kernel is RBF
+    prevPost <- NULL
     #loop through trials
     for (trial in 1:25){
       #output by GP with particular parameter settings
       #don't forget mean centering and standardization
-      out<-bayesianMeanTracker(x=X, y=(y-25)/50, theta=parVec)
+      out<-bayesianMeanTracker(x=t(X[trial,]), y=(y[trial]-25)/50, theta=parVec, prevPost = prevPost)
+      prevPost<-out
       #utility vector by UCB
       utilityVec<-ucb(out, beta)
       #avoid overflow
@@ -189,7 +191,7 @@ dat$chosen<-0
 for (i in 1:nrow(dat)){
   dat$chosen[i]<-which(dopt$x==dat$x[i] & dopt$y == dat$y[i])
 }
-head(dat)
+head(dat, 200)
 dfinal<-data.frame(id=dat$id, round=dat$round, trial=dat$trial, 
                    x=dat$x, y=dat$y, z=dat$z, chosen=dat$chosen)
 write.csv(dfinal, "recoverbmt.csv")

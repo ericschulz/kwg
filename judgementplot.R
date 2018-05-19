@@ -133,14 +133,14 @@ dp1<-ddply(dat, ~Condition+Age, summarize,
 ########################################################
 #Figure A: Error
 ########################################################
-
+dat1<-ddply(dat, ~id+Age+Condition, summarise, error=mean(error))
 p1<-ggplot(data = dp1) +
   #boxplot with given values, we only need half of it
    geom_boxplot(aes(x = as.numeric(Age)-0.2, ymin = d_lower, ymax = d_upper, lower = d_lower, 
                     middle = d_middle, upper = d_upper, width = 2 * 0.2, fill = Age), stat = "identity") +
   #jitter of raw data points, needs the full data frame
-   geom_jitter(data=dat, aes(x = as.numeric(Age) + 0.2,  y = error,  color = Age), 
-               width = 0.2 - 0.25 * 0.2, height = 0, size=0.1)+
+   geom_jitter(data=dat1, aes(x = as.numeric(Age) + 0.2,  y = error,  color = Age), 
+               width = 0.2 - 0.25 * 0.2, height = 0, size=1)+
   #vertical segment
   geom_segment(aes(x = as.numeric(Age), y = d_ymin, xend = as.numeric(Age), yend = d_ymax)) +
   geom_point(aes(x = as.numeric(Age)-0.2, y = mu), shape=23, size=3, fill="white", color="black") +
@@ -169,6 +169,7 @@ p1<-ggplot(data = dp1) +
         plot.title = element_text(family = "sans", margin=margin(0,0,0,0)),
         plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
 
+p1
 
 #data frame with everything needed for second plot
 dp2<-ddply(dat, ~Condition+Age, summarize,  
@@ -181,13 +182,14 @@ dp2<-ddply(dat, ~Condition+Age, summarize,
 ########################################################
 #Figure B: Certainty
 ########################################################
+dat2<-ddply(dat, ~id+Age+Condition, summarise, cer=mean(cer))
 p2<-ggplot(data = dp2) +
   #boxplot of half the size
   geom_boxplot(aes(x = as.numeric(Age)-0.2, ymin = d_lower, ymax = d_upper,lower = d_lower,
                    middle = d_middle, upper = d_upper, width = 2 * 0.2, fill = Age), stat = "identity") +
   #jitter of full data
-  geom_jitter(data=dat, aes(x = as.numeric(Age) + 0.2,  y = cer,  color = Age),
-              width = 0.2 - 0.25 * 0.2, height = 0, size=0.1)+
+  geom_jitter(data=dat2, aes(x = as.numeric(Age) + 0.2,  y = cer,  color = Age),
+              width = 0.2 - 0.25 * 0.2, height = 0, size=1)+
   # vertical segment
   geom_segment(aes(x = as.numeric(Age), y = d_ymin, xend = as.numeric(Age), yend = d_ymax)) +
   #top horizontal segment
@@ -220,6 +222,8 @@ p2<-ggplot(data = dp2) +
         plot.title = element_text(family = "sans", margin=margin(0,0,0,0)),
         plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
 
+p2
+
 #get the standardized estimates as well as the standardized certainties
 d<-ddply(dat, ~id+Age, summarize, mu1=est[chosen==1]/sum(est), mu2=cer[chosen==1]/sum(cer))
 #rejoin them as plottable data frame
@@ -241,6 +245,7 @@ dp3$j<-factor(dp3$j, levels=c("Estimate", "Certainty"))
 ########################################################
 #Figure C: Standardized estimates of chosen option
 ########################################################
+
 p3<-ggplot(data = dp3) +
   #boxplot, half the size
   geom_boxplot(aes(x = as.numeric(Age)-0.2, ymin = d_lower, ymax = d_upper,
@@ -248,7 +253,7 @@ p3<-ggplot(data = dp3) +
                    fill = Age), stat = "identity") +
   #jitter of raw data
   geom_jitter(data=d, aes(x = as.numeric(Age) + 0.2,  y = Estimate,  color = Age),
-              width = 0.2 - 0.25 * 0.2, height = 0, size=0.1)+
+              width = 0.2 - 0.25 * 0.2, height = 0, size=1)+
   # vertical segment
   geom_segment(aes(x = as.numeric(Age), y = d_ymin, xend = as.numeric(Age), yend = d_ymax)) +
   # top horizontal segment
@@ -279,6 +284,7 @@ p3<-ggplot(data = dp3) +
         plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
 
 p3
+
 #create tikz of all plots in a grid
 pdf(file = "judgements.pdf", width = 14, height = 7.5/2)
 grid.arrange(p1,p2, p3, nrow=1)
