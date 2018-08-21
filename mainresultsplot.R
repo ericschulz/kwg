@@ -86,14 +86,15 @@ cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
 ########################################################
 dp1$Age<-factor(dp1$Age, levels=c("7-8", "9-11", ">18"))
 dat$Age<-factor(dat$Age, levels=c("7-8", "9-11", ">18"))
+dat1<-ddply(dat, ~id+Age+Condition, summarize, z=mean(z))
 
 p1<-ggplot(data = dp1) +
   #boxplot with given values, we only need half of it
   geom_boxplot(aes(x = as.numeric(Age)-0.2, ymin = d_lower, ymax = d_upper, lower = d_lower, 
                    middle = d_middle, upper = d_upper, width = 2 * 0.2, fill = Age), stat = "identity") +
   #jitter of raw data points, needs the full data frame
-  geom_jitter(data=dat, aes(x = as.numeric(Age) + 0.2,  y = z,  color = Age), alpha=0.1,
-              width = 0.2 - 0.25 * 0.2, height = 0, size=0.1)+
+  geom_jitter(data=dat1, aes(x = as.numeric(Age) + 0.2,  y = z,  color = Age),
+              width = 0.2 - 0.25 * 0.2, height = 0, size=1.2, alpha=0.5)+
   #vertical segment
   geom_segment(aes(x = as.numeric(Age), y = d_ymin, xend = as.numeric(Age), yend = d_ymax)) +
   #geom_segment(aes(x = as.numeric(Age)+0.4, y = cidown, xend = as.numeric(Age)+0.4, yend = ciup), size = 2, color="grey30") +
@@ -153,7 +154,7 @@ p2<-ggplot(subset(dat,dist<=10 & trial !=0), aes(x = dist, y = Age, fill=Age, he
   theme(legend.position="none", strip.background=element_blank(),
         text = element_text(size=fontsize,  family="sans"))+
   #line marking repeats
-  geom_vline(xintercept=0.5, size=1.5, col="red")+
+  geom_vline(xintercept=0.5, size=1.15, col="red")+
   geom_hline(yintercept = 10, size=1)+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
@@ -262,16 +263,16 @@ dp4<-ddply(d, ~model+Age, summarize,
            d_lower = quantile(r2, 0.25),  d_middle = median(r2), d_upper = quantile(r2, 0.75),
            mu=mean(r2))
 
-
-as.numeric(dp4$model)
+head(d)
+d1<-ddply(d, ~id+Age+condition+model, summarize, r2=mean(r2))
 
 p4<-ggplot(data = dp4) +
   #boxplot with given values, we only need half of it
   geom_boxplot(aes(x = as.numeric(model)-0.2, ymin = d_lower, ymax = d_upper, lower = d_lower, 
                    middle = d_middle, upper = d_upper, width = 2 * 0.2, fill = Age), stat = "identity") +
   #jitter of raw data points, needs the full data frame
-  geom_jitter(data=d, aes(x = as.numeric(model) + 0.2,  y = r2,  color = Age), 
-              width = 0.2 - 0.25 * 0.2, height = 0, size=0.1)+
+  geom_jitter(data=d1, aes(x = as.numeric(model) + 0.2,  y = r2,  color = Age), 
+              width = 0.2 - 0.25 * 0.2, height = 0, size=1)+
   #vertical segment
   geom_segment(aes(x = as.numeric(model), y = d_ymin, xend = as.numeric(model), yend = d_ymax)) +
   geom_point(aes(x = as.numeric(model)-0.2, y = mu), shape=23, size=3, fill="white", color="black") +
@@ -287,7 +288,7 @@ p4<-ggplot(data = dp4) +
   scale_fill_manual(values = c(cbPalette[c(7,6)], "grey40"))+
   scale_color_manual(values = c(cbPalette[c(7,6)], "grey40"))+
   #labs
-  xlab("Model")+ylab(expression("Predictive accuracy:"~r^2))+
+  xlab("Model")+ylab(expression("Predictive accuracy:"~R^2))+
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
@@ -304,7 +305,9 @@ p4
 
 #parameters
 dp<-data.frame(estimate=exp(c(drbf$par1, drbf$par2,drbf$par3)), id=rep(drbf$id, 3), param=rep(c("lambda", "beta", "tau"), each=nrow(drbf)))
-
+sum(subset(dp, param=="beta")$estimate>5)/nrow(subset(dp, param=="beta"))
+sum(subset(dp, param=="tau")$estimate>5)/nrow(subset(dp, param=="tau"))
+sum(subset(dp, param=="lambda")$estimate>5)/nrow(subset(dp, param=="lambda"))
 #condition and age
 dp$condition<-0
 dp$age<-0
@@ -316,8 +319,8 @@ for (i in 1:nrow(dp)){
 
 dp$Age<-dp$age
 dp$Age<-factor(dp$Age, levels=c("7-8", "9-11", ">18"))
-dp<-subset(dp, estimate<=2)
-
+dp<-ddply(dp, ~id+param+Age, summarize, estimate=median(estimate[estimate<=5]))
+dp<-na.omit(dp)
 dp$param<- factor(dp$param,levels=c("lambda", "beta", "tau"), 
                   labels = c(expression("Generalization"~lambda),
                              expression("Exploration"~beta), 
@@ -329,13 +332,14 @@ dp5<-ddply(dp, ~param+Age, summarize,
            d_lower = quantile(estimate, 0.25),  d_middle = median(estimate), d_upper = quantile(estimate, 0.75),
            mu=mean(estimate))
 
+
 p5<-ggplot(data = dp5) +
   #boxplot with given values, we only need half of it
   geom_boxplot(aes(x = as.numeric(Age)-0.2, ymin = d_lower, ymax = d_upper, lower = d_lower, 
                    middle = d_middle, upper = d_upper, width = 2 * 0.2, fill = Age), stat = "identity") +
   #jitter of raw data points, needs the full data frame
   geom_jitter(data=dp, aes(x = as.numeric(Age) + 0.2,  y = estimate,  color = Age), 
-              width = 0.2 - 0.25 * 0.2, height = 0, size=0.1)+
+              width = 0.2 - 0.25 * 0.2, height = 0, size=1)+
   #vertical segment
   geom_segment(aes(x = as.numeric(Age), y = d_ymin, xend = as.numeric(Age), yend = d_ymax)) +
   geom_point(aes(x = as.numeric(Age)-0.2, y = mu), shape=23, size=3, fill="white", color="black") +
@@ -364,7 +368,7 @@ p5<-ggplot(data = dp5) +
         panel.spacing.x=unit(0.2, "lines"),
         panel.spacing.y=unit(1, "lines"),
         plot.title = element_text(family = "sans", margin=margin(0,0,0,0)),
-        plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
+        plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))+ylim(c(0,2))
 p5
 
 #getting the learning curves in

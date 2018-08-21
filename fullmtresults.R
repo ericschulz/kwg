@@ -101,6 +101,7 @@ dp1<-ddply(dall, ~Condition+Age+model, summarize,
 fontsize<-17
 cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
+dall<-ddply(dall, ~model+id+Age+Condition, summarize, r2=mean(r2))
 
 pall<-ggplot(data = dp1) +
   #boxplot with given values, we only need half of it
@@ -108,7 +109,7 @@ pall<-ggplot(data = dp1) +
                    middle = d_middle, upper = d_upper, width = 2 * 0.2, fill = Age), stat = "identity") +
   #jitter of raw data points, needs the full data frame
   geom_jitter(data=dall, aes(x = as.numeric(model) + 0.2,  y = r2,  color = Age), 
-              width = 0.2 - 0.25 * 0.2, height = 0, size=0.1)+
+              width = 0.2 - 0.25 * 0.2, height = 0, size=1)+
   #vertical segment
   geom_segment(aes(x = as.numeric(model), y = d_ymin, xend = as.numeric(model), yend = d_ymax)) +
   #top horizontal segment
@@ -124,7 +125,7 @@ pall<-ggplot(data = dp1) +
   scale_fill_manual(values = c(cbPalette[c(7,6)], "grey40"))+
   scale_color_manual(values = c(cbPalette[c(7,6)], "grey40"))+
   #labs
-  xlab("Sampling strategy")+ylab(expression("Predicitive accuracy:"~r^2))+
+  xlab("Sampling strategy")+ylab(expression("Predicitive accuracy:"~R^2))+
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
@@ -162,15 +163,15 @@ dp2<-ddply(dp, ~Condition+Age+param, summarize,
            d_ymax = min(max(estimate), quantile(estimate, 0.75) + 1.5 * IQR(estimate)),
            d_lower = quantile(estimate, 0.25),  d_middle = median(estimate), d_upper = quantile(estimate, 0.75),
            mu=mean(estimate))
-
-
+head(dp)
+dp<-ddply(dp, ~id+param+Condition+Age, summarize, estimate=mean(estimate))
 p2<-ggplot(data = dp2) +
   #boxplot with given values, we only need half of it
   geom_boxplot(aes(x = as.numeric(Age)-0.2, ymin = d_lower, ymax = d_upper, lower = d_lower, 
                    middle = d_middle, upper = d_upper, width = 2 * 0.2, fill = Age), stat = "identity") +
   #jitter of raw data points, needs the full data frame
   geom_jitter(data=dp, aes(x = as.numeric(Age) + 0.2,  y = estimate,  color = Age), 
-              width = 0.2 - 0.25 * 0.2, height = 0, size=0.1)+
+              width = 0.2 - 0.25 * 0.2, height = 0, size=1)+
   #vertical segment
   geom_segment(aes(x = as.numeric(Age), y = d_ymin, xend = as.numeric(Age), yend = d_ymax)) +
   geom_point(aes(x = as.numeric(Age)-0.2, y = mu), shape=23, size=3, fill="white", color="black") +
