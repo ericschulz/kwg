@@ -110,7 +110,7 @@ for (nid in 1:160){
     for (trial in 1:25){
       #output by GP with particular parameter settings
       #don't forget mean centering and standardization
-      out<-bayesianMeanTracker(x=t(X[trial,]), y=(y[trial]-25)/50, theta=parVec, prevPost = prevPost)
+      out<-bayesianMeanTracker(x=X[trial,], y=(y[trial]-25)/50, theta=parVec, prevPost = prevPost)
       prevPost<-out
       #utility vector by UCB
       utilityVec<-ucb(out, beta)
