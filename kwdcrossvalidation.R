@@ -7,23 +7,23 @@ rm(list=ls()) #house keeping
 packages <- c('plyr', 'jsonlite', 'DEoptim', "matrixcalc", "fields")
 lapply(packages, require, character.only = TRUE)
 #Source dependencies
-source('/home/ucabchu/Scratch/kidswithgrids/models.R')
-
+#source('/home/ucabchu/Scratch/kidswithgrids/models.R')
+source('models.R')
 ##############################################################################################################
 #Cluster configuration: (1 subject x model combination) per CPU
 ##############################################################################################################
 
 #IMPORTANT: update batch name
-batchName = 'kwg' #saves output csv files in 'modelResults/batchName/*.csv'
-#InertiaWeighting of acquisition functions used in Local-GP models
+#batchName = 'kwg' #saves output csv files in 'modelResults/batchName/*.csv'
+batchName = 'bmtrecovery' #saves output csv files in 'modelResults/batchName/*.csv'
 
 #Cluster id from qsub
 clusterid <- as.integer(commandArgs(TRUE)[1]) #Cluster id, corresponds to an integer used to indicate which combination of kernel and acquisition function to simulate
 #create list of all kernel functions
-kernellist<-list(rbf)
+kernellist<-list(rbf, bayesianMeanTracker)
 
 #names of all kernel functions
-kernelnames<-c("RBF")
+kernelnames<-c("RBF", "BMT")
 #kernelnames<-c("RBF")
 
 #list of all acquisition functions
@@ -158,10 +158,10 @@ modelFit<-function(par, subjD, acquisition, k,  horizonLength, rounds){
 ##############################################################################################################
 #function to plug in to the optimaztion routine
 #selector: scalar, indicates a specific participant
-#kernel, function, can be "rbf", "oru", "matern", or NULL (Kalman filter)
+#kernel, function, can be "rbf", "oru", "matern", or "bayesianMeanTracker"/other kalmanfilter implementations
 #acquisition, function, can be "ucb", "probofimp", "expofimp", or "PMU"
-#horizonLength is 5 or 10
-#leaveoutindex is 1,2,3,4,5,6,7, or 8
+#horizonLength is number of search decisions in each trial
+#leaveoutindex is [1,2,...,n_rounds]
 #inertiaWeight: whether nor not acquisition functions are weighted by inertia
 cvfun<-function(selector, kernelFun, acquisition, leaveoutindex){
   #subselect participant, horizon and rounds not left out
@@ -203,9 +203,8 @@ cvfun<-function(selector, kernelFun, acquisition, leaveoutindex){
 ##############################################################################################################
 output <- c()
 
-#rounds where at least two clicks are conducted
 subjdata <- subset(data, id==subjectId)
-roundList <- count(subjdata$round)[count(subjdata$round)$freq>=2,]$x
+roundList <- unique(subjdata$round)
 #cross-validation routine
 for (r in roundList){ #loop through rounds in roundList
   cv <- cvfun(subjectId, kernelFun=kernellist[[model[[1]]]], acquisition = acqlist[[model[[2]]]], leaveoutindex=r)
@@ -213,8 +212,8 @@ for (r in roundList){ #loop through rounds in roundList
 }
 
 #save the vector with kernel-acquisition-pair as name
-name<-paste0("/home/ucabchu/Scratch/kidswithgrids/", batchName, kernelnames[model[[1]]], acqnames[model[[2]]], subjectId)
-write.csv(output, paste0(name, '.csv'))
+name<-paste0("modelResults/", batchName, "/",kernelnames[model[[1]]], acqnames[model[[2]]], subjectId, ".csv")
+write.csv(output,name)
 
 ##############################################################################################################
 #THE END
