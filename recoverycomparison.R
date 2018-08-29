@@ -1,34 +1,45 @@
-mm<-read.csv("bmtrecoverbmt.csv")
-mg<-read.csv("bmtrecovergp.csv")
-gm<-read.csv("gprecoverbmt.csv")
-gg<-read.csv("gprecovergp.csv")
 
-mm$r2<-(1-mm$X.2/(-26*log(1/64)))
-mg$r2<-(1-mg$X.2/(-26*log(1/64)))
-gm$r2<-(1-gm$X.2/(-25*log(1/64)))
-gg$r2<-(1-gg$X.2/(-25*log(1/64)))
-mean(mm$r2)
-mean(gm$r2)
-mean(gg$r2)
-mean(mg$r2)
-mm$id<-mg$id<-gm$id<-gg$id<-rep(1:160, each=8)
 
 library(plyr)
 library(BayesFactor)
 library(lsr)
 
-mm<-ddply(mm,  ~id,summarize, m=median(r2))
-gm<-ddply(gm,  ~id,summarize, m=median(r2))
-mg<-ddply(mg,  ~id,summarize, m=median(r2))
-gg<-ddply(gg,  ~id,summarize, m=median(r2))
+#Read recovery data files
+mm<-read.csv("bmtrecoverbmt.csv")
+mg<-read.csv("bmtrecovergp.csv")
+gm<-read.csv("gprecoverbmt.csv")
+gg<-read.csv("gprecovergp.csv")
 
-mean(gm$m)
-t.test(mm$m-gm$m)
-cohensD(mm$m-gm$m)
-ttestBF(mm$m-gm$m)
-sum(mm$m-gm$m>=0)
+#
+#mean(mm$r2)
+#mean(gm$r2)
+#mean(gg$r2)
+#mean(mg$r2)
 
-t.test(gg$m-mg$m)
-cohensD(gg$m-mg$m)
-ttestBF(mm$m-gm$m)
-sum(gg$m-mg$m>=0)
+mm$id<-mg$id<-gm$id<-gg$id<-rep(1:160, each=8)
+
+#sum negative log likelihood over 8 crossvalidation slices 
+mm<-ddply(mm,  ~id,summarize, nll=sum(X.2))
+gm<-ddply(gm,  ~id,summarize, nll=sum(X.2))
+mg<-ddply(mg,  ~id,summarize, nll=sum(X.2))
+gg<-ddply(gg,  ~id,summarize, nll=sum(X.2))
+
+#compute R2
+mm$r2<-(1-mm$nll/(-8*25*log(1/64))) #random chance is 1/64 for each trial, for 25 trials, in 8 rounds
+mg$r2<-(1-mg$nll/(-8*25*log(1/64)))
+gm$r2<-(1-gm$nll/(-8*25*log(1/64)))
+gg$r2<-(1-gg$nll/(-8*25*log(1/64)))
+
+#BMT generated data
+mean(gm$r2) 
+mean(mm$r2)
+t.test(mm$r2-gm$r2)
+cohensD(mm$r2-gm$r2)
+ttestBF(mm$r2-gm$r2)
+sum(mm$r2-gm$r2>=0) #how many simualted participants are best described by BMT vs. GP
+
+#GP generated data
+t.test(gg$r2-mg$r2)
+cohensD(gg$r2-mg$r2)
+ttestBF(mm$r2-gm$r2)
+sum(gg$r2-mg$r2>=0)
