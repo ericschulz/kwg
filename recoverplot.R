@@ -18,8 +18,8 @@ dd4<-ddply(d4, ~id, summarize, r2=mean(r2))
 
 
 dd<-rbind(dd1, dd2, dd3, dd4)
-dd$model<-rep(c("GP", "MT", "GP", "MT"), each=nrow(dd1))
-dd$producing<-rep(c("GP", "MT"), each=nrow(dd1)*2)
+dd$model<-rep(c("GP", "BMT", "GP", "BMT"), each=nrow(dd1))
+dd$producing<-rep(c("GP", "BMT"), each=nrow(dd1)*2)
 #data frame with everything we need, i.e. min, max, lower nad upper quantile, median, CIs & mean
 dp1<-ddply(dd, ~producing+model, summarize,
            d_ymin = max(min(r2), quantile(r2, 0.25) - 1.5 * IQR(r2)), 
@@ -27,8 +27,10 @@ dp1<-ddply(dd, ~producing+model, summarize,
            d_lower = quantile(r2, 0.25),  d_middle = median(r2), d_upper = quantile(r2, 0.75),
            mu=mean(r2))
 
-dp1$model<-factor(dp1$model, levels=(c("GP", "MT")))
-dd$model<-factor(dd$model, levels=(c("GP", "MT")))
+dp1$model<-factor(dp1$model, levels=(c("GP", "BMT")))
+dd$model<-factor(dd$model, levels=(c("GP", "BMT")))
+dp1$producing <- factor(dp1$producing, levels=(c("GP", "BMT")))
+dd$producing <- factor(dd$producing, levels=(c("GP", "BMT")))
 
 library(ggplot2)
 fontsize<-14
@@ -49,9 +51,9 @@ p1<-ggplot(data = dp1) +
   geom_segment(aes(x = as.numeric(model) - 0.1,  y = d_ymax, xend = as.numeric(model),  yend = d_ymax)) +
   #top vertical segment
   geom_segment(aes(x = as.numeric(model) - 0.1, y = d_ymin, xend = as.numeric(model), yend = d_ymin)) +
-  facet_wrap(~producing)+
+  facet_grid(~producing)+
   #theme minimal
-  theme_minimal()+
+  theme_classic()+
   #sans
   theme(text = element_text(size=fontsize,  family="sans"))+
   #colors and fill
@@ -62,7 +64,7 @@ p1<-ggplot(data = dp1) +
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
-  scale_x_continuous(breaks = c(1,2,3,4),labels = c("GP","MT", "GP", "MT"))+
+  scale_x_continuous(breaks = c(1,2,3,4),labels = c("GP","BMT", "GP", "BMT"))+
   ggtitle("Recovery")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
@@ -71,7 +73,7 @@ p1<-ggplot(data = dp1) +
         panel.spacing.y=unit(1, "lines"),
         plot.title = element_text(family = "sans", margin=margin(0,0,0,0)),
         plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
-
-pdf("recoverycompare.pdf", width=8, height=4)
 p1
-dev.off()
+
+ggsave("recoverycompare.pdf",p1, width=8, height=4, units = 'in', useDingbats=F)
+ggsave("recoverycompare.png",p1, width=8, height=4, dpi=300)

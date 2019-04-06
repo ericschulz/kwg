@@ -5,7 +5,7 @@
 rm(list=ls())
 
 #packages
-packages <- c('plyr', 'ggplot2', 'jsonlite', 'gridExtra', 'ggjoy', "tikzDevice")
+packages <- c('plyr', 'ggplot2', 'jsonlite', 'gridExtra', 'ggridges')
 lapply(packages, require, character.only = TRUE)
 
 #read in data
@@ -110,18 +110,31 @@ p1<-ggplot(data = dp1) +
         panel.spacing.y=unit(1, "lines"),
         plot.title = element_text(family = "sans", margin=margin(0,0,0,0)))
 
-p1
+p1a <- ggplot(dat[dat$time>0 & !is.na(dat$time),], aes(x=time, y = Age, fill = Age))+
+  geom_density_ridges()+
+  xlab('RT in ms')+
+  ylab('Age')+
+  scale_x_log10(limits = c(100,5000))+
+  annotation_logticks(sides='b')+
+  scale_fill_manual(values = c(cbPalette[c(7,6)], "grey40"))+
+  scale_color_manual(values = c(cbPalette[c(7,6)], "grey40"))+
+  theme_classic()+scale_y_discrete(expand = c(0.01, 0))+
+  scale_y_discrete(expand = c(0, 0.1))+
+  ggtitle("Reaction times")+
+  theme(legend.position='none', strip.background=element_blank(), legend.key=element_rect(color=NA))
+p1a
+
 
 
 dat$prev<-round(c(0, dat$z[-length(dat$z)])/3)*3
-p2 <- ggplot(subset(dat,prev>=0 & prev<=50 & trial>0 & time <5000), aes(x=prev, y = log(time), color = Age, fill=Age)) +
+p2 <- ggplot(subset(dat,prev>=0 & prev<=50 & trial>0 & time <5000), aes(x=prev, y = time, color = Age, fill=Age)) +
   #geom_count(alpha=0.2, show.legend = F, position = position_dodge(width=0.1))+
   #scale_size_area(max_size = 5)+
   #geom_jitter(alpha=0.05, size=0.5)+
   stat_summary(fun.y = mean, geom = 'line')+
   stat_summary(fun.data = mean_se, geom = 'ribbon', alpha = 0.5, color=NA) +
-  ylab("Reaction time on t+1")+
-  xlab('Reward on t')+ggtitle("B: Reaction time and rewards")+
+  ylab("Mean RT (ms) on t+1")+
+  xlab('Reward on t')+ggtitle("Reaction time and rewards")+
   #ylim(c(0,50))+
   scale_fill_manual(values = c(cbPalette[c(7,6)], "grey40"))+
   scale_color_manual(values = c(cbPalette[c(7,6)], "grey40"))+
@@ -129,7 +142,9 @@ p2 <- ggplot(subset(dat,prev>=0 & prev<=50 & trial>0 & time <5000), aes(x=prev, 
   #scale_color_brewer(palette = 'Dark2', name="")+
   #scale_fill_brewer( palette = 'Dark2', name="")+
   facet_grid(~Condition)+
-  theme_minimal()+
+  theme_classic()+
+  scale_y_log10()+
+  annotation_logticks(sides='l')+
   theme(text = element_text(size=fontsize,  family="sans"))+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
@@ -137,11 +152,12 @@ p2 <- ggplot(subset(dat,prev>=0 & prev<=50 & trial>0 & time <5000), aes(x=prev, 
         panel.spacing.x=unit(0.2, "lines"),
         panel.spacing.y=unit(1, "lines"),
         plot.title = element_text(family = "sans", margin=margin(0,0,0,0)),
-        legend.position = "none")
+        legend.position = c(0.9,0.8), strip.background=element_blank(), legend.key=element_rect(color=NA))
 
 p2
 
-library(gridExtra)
-pdf("reactiontimes.pdf", width=10, height=4)
-grid.arrange(p1,p2, nrow=1)
-dev.off()
+library(cowplot)
+p <- plot_grid(p1a,p2, nrow=1, labels = 'auto')
+ggsave("reactiontimes.pdf",p,  width=10, height=4, units = 'in', useDingbats = F)
+ggsave("reactiontimes.png",p,  width=10, height=4, dpi=300)
+

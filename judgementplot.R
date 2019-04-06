@@ -149,7 +149,7 @@ p1<-ggplot(data = dp1) +
   #top vertical segment
   geom_segment(aes(x = as.numeric(Age) - 0.1, y = d_ymin, xend = as.numeric(Age), yend = d_ymin)) +facet_wrap(~Condition)+
   #theme minimal
-  theme_minimal()+
+  theme_classic()+
   #sans
   theme(text = element_text(size=fontsize,  family="sans"))+
   #colors and fill
@@ -160,7 +160,7 @@ p1<-ggplot(data = dp1) +
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
-  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("A: Error")+
+  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("Error")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -199,7 +199,7 @@ p2<-ggplot(data = dp2) +
   #facetting
   facet_wrap(~Condition)+
   #theme
-  theme_minimal()+
+  theme_classic()+
   #mean
   geom_point(aes(x = as.numeric(Age)-0.2, y = mu), shape=23, size=3, fill="white", color="black") +
   #sans
@@ -213,7 +213,7 @@ p2<-ggplot(data = dp2) +
   #scale x axis with labes
   scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+
   #title
-  ggtitle("B: Certainty")+
+  ggtitle("Certainty")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -261,7 +261,7 @@ p3<-ggplot(data = dp3) +
   # top vertical segment
   geom_segment(aes(x = as.numeric(Age) - 0.1, y = d_ymin, xend = as.numeric(Age), yend = d_ymin)) +facet_wrap(~j)+
   #theme
-  theme_minimal()+
+  theme_classic()+
   #Mean
   geom_point(aes(x = as.numeric(Age)-0.2, y = mu), shape=23, size=3, fill="white", color="black") +
   #Fonts
@@ -274,7 +274,7 @@ p3<-ggplot(data = dp3) +
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #Add labels
-  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("C: Chosen option")+
+  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("Chosen option")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -285,7 +285,8 @@ p3<-ggplot(data = dp3) +
 
 p3
 
-#create tikz of all plots in a grid
-pdf(file = "judgements.pdf", width = 14, height = 7.5/2)
-grid.arrange(p1,p2, p3, nrow=1)
-dev.off()
+library(cowplot)
+p <- plot_grid(p1,p2,p3, nrow = 1, labels = 'auto')
+p
+ggsave(file = "kwg3.pdf",p,  width = 14, height = 7.5/2, units = 'in', useDingbats = F)
+ggsave(file = "kwg3.png",p,  width = 14, height = 7.5/2, dpi=300)

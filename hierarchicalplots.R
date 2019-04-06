@@ -22,7 +22,7 @@ p1<-ggplot(data.frame(x = c(15, 50)), aes(x)) +
   sd = dm$sd[4:163]
   )+
   stat_function(fun = dnorm, args = list(mean = dm$mean[1], sd = dm$sd[1]), col = "red")+
-  theme_minimal()+
+  theme_classic()+
   scale_x_continuous(expand = c(0, 0))+
   scale_y_continuous(expand = c(0, 0))+
   ggtitle("Mean")+xlab(expression(theta[0]))+
@@ -46,7 +46,7 @@ p2<-ggplot(data.frame(x = c(-5, 10)), aes(x)) +
   mean = dm$mean[324:483], 
   sd = dm$sd[324:483])+
   stat_function(fun = dnorm, args = list(mean = dm$mean[3], sd = dm$sd[3]), col = "red")+
-  theme_minimal()+
+  theme_classic()+
   scale_x_continuous(expand = c(0, 0))+
   scale_y_continuous(expand = c(0, 0))+
   theme(text = element_text(size=fontsize,  family="sans"))+
@@ -70,7 +70,7 @@ p3<-ggplot(data.frame(x = c(-12, 12)), aes(x)) +
   mean = dm$mean[164:323], 
   sd = dm$sd[164:323])+
   stat_function(fun = dnorm, args = list(mean = dm$mean[2], sd = dm$sd[2]), col = "red")+
-  theme_minimal()+
+  theme_classic()+
   theme(text = element_text(size=fontsize,  family="sans"))+
   scale_x_continuous(expand = c(0, 0))+
   scale_y_continuous(expand = c(0, 0))+
@@ -86,6 +86,8 @@ p3<-ggplot(data.frame(x = c(-12, 12)), aes(x)) +
 p3
 
 #save them all
-pdf("trialsandrounds.pdf", width=12, height=4)
-grid.arrange(p1,p2,p3, nrow=1)
-dev.off()
+library(cowplot)
+p <- plot_grid(p1,p2, p3, nrow = 1)
+ggsave("trialsandrounds.pdf",p, width=12, height=4, units = 'in', useDingbats =F)
+ggsave("trialsandrounds.png",p, width=12, height=4, dpi=300)
+

@@ -94,7 +94,7 @@ p1<-ggplot(data = dp1) +
                    middle = d_middle, upper = d_upper, width = 2 * 0.2, fill = Age), stat = "identity") +
   #jitter of raw data points, needs the full data frame
   geom_jitter(data=dat1, aes(x = as.numeric(Age) + 0.2,  y = z,  color = Age),
-              width = 0.2 - 0.25 * 0.2, height = 0, size=1.2, alpha=0.5)+
+              width = 0.2 - 0.25 * 0.2, height = 0, size=1.2, alpha=0.7)+
   #vertical segment
   geom_segment(aes(x = as.numeric(Age), y = d_ymin, xend = as.numeric(Age), yend = d_ymax)) +
   #geom_segment(aes(x = as.numeric(Age)+0.4, y = cidown, xend = as.numeric(Age)+0.4, yend = ciup), size = 2, color="grey30") +
@@ -104,7 +104,7 @@ p1<-ggplot(data = dp1) +
   #top vertical segment
   geom_segment(aes(x = as.numeric(Age) - 0.1, y = d_ymin, xend = as.numeric(Age), yend = d_ymin)) +facet_wrap(~Condition)+
   #theme minimal
-  theme_minimal()+
+  theme_classic()+
   #sans
   theme(text = element_text(size=fontsize,  family="sans"))+
   #colors and fill
@@ -115,7 +115,7 @@ p1<-ggplot(data = dp1) +
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
-  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("A: Performance")+
+  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("Performance")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -137,7 +137,7 @@ for (i in 2:nrow(dat)){
 #SECOND PLOT: 
 p2<-ggplot(subset(dat,dist<=10 & trial !=0), aes(x = dist, y = Age, fill=Age, height = ..density..)) +
   #joy plot but not as density but as bins
-  geom_joy(alpha = .7, stat = "binline", bins = 10.5, scale = 0.9)+theme_minimal()+
+  geom_density_ridges(alpha = .7, stat = "binline", bins = 10.5, scale = 0.9)+ theme_classic()+
   #color code
   scale_fill_manual(values = cbPalette[c(7,6,1)])+
   #wrap by condition
@@ -147,7 +147,7 @@ p2<-ggplot(subset(dat,dist<=10 & trial !=0), aes(x = dist, y = Age, fill=Age, he
   #0 to 10
   scale_x_continuous(breaks = seq(0,10,2))+
   #title
-  ggtitle("B: Search behavior")+
+  ggtitle("Search behavior")+
   #expand
   scale_y_discrete(expand = c(0, 0)) +
   #theme fontsize
@@ -190,13 +190,13 @@ p3<-ggplot(dd, aes(x=trial, y=mu, group=interaction(Cond, Age), col=Age, linetyp
   scale_y_continuous(breaks=c(25,30,35,40,45))+
   scale_x_continuous(breaks=seq(0,26,5))+
   #theme
-  theme_minimal()+
+  theme_classic()+
   #color scheme
   scale_color_manual(values = cbPalette[c(7,6,1)])+
   #theme
   theme(text = element_text(size=fontsize,  family="sans")) +
   #titlte
-  ggtitle("C: Learning curves")+
+  ggtitle("Learning curves")+
   #theme
   theme(legend.position ="top", 
         strip.background=element_blank(), 
@@ -281,7 +281,7 @@ p4<-ggplot(data = dp4) +
   #top vertical segment
   geom_segment(aes(x = as.numeric(model) - 0.1, y = d_ymin, xend = as.numeric(model), yend = d_ymin)) +facet_wrap(~Age)+
   #theme minimal
-  theme_minimal()+
+  theme_classic()+
   #sans
   theme(text = element_text(size=fontsize,  family="sans"))+
   #colors and fill
@@ -292,7 +292,7 @@ p4<-ggplot(data = dp4) +
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
-  scale_x_continuous(breaks = c(1,2),labels = c("MT","GP"))+ggtitle("D: Model comparison")+
+  scale_x_continuous(breaks = c(1,2),labels = c("BMT","GP"))+ggtitle("Model comparison")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -349,7 +349,7 @@ p5<-ggplot(data = dp5) +
   geom_segment(aes(x = as.numeric(Age) - 0.1, y = d_ymin, xend = as.numeric(Age), yend = d_ymin)) +
   facet_wrap(~param, labeller = label_parsed)+
   #theme minimal
-  theme_minimal()+
+  theme_classic()+
   #sans
   theme(text = element_text(size=fontsize,  family="sans"))+
   #colors and fill
@@ -361,7 +361,7 @@ p5<-ggplot(data = dp5) +
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
   coord_cartesian(ylim = c(0,2))+
-  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("E: Parameter estimates")+
+  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("Parameter estimates")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -407,11 +407,11 @@ p6<-ggplot(dd, aes(x=trial, y=mu, group=interaction(Cond, Age), col=Age, linetyp
   scale_y_continuous(breaks=c(25,30,35,40,45))+
   scale_x_continuous(breaks=seq(0,26,5))+
   #theme
-  theme_minimal()+
+  theme_classic()+
   scale_color_manual(values = cbPalette[c(7,6,1)])+
   theme(text = element_text(size=fontsize,  family="sans")) +
   #title
-  ggtitle("F: Simulated learning curves")+
+  ggtitle("Simulated learning curves")+
   theme(legend.position ="top", 
         strip.background=element_blank(), 
         legend.key=element_rect(color=NA))+
@@ -428,6 +428,8 @@ p6<-ggplot(dd, aes(x=trial, y=mu, group=interaction(Cond, Age), col=Age, linetyp
         legend.box.margin=margin(-1,-1,-15,-10))
 p6
 #create tikz of all plots in a grid
-pdf(file = "bigplot.pdf", width = 14, height = 7.5, useDingBats=F)
-grid.arrange(p1,p2, p3, p4, p5, p6, nrow=2)
-dev.off()
+library('cowplot')
+p <- plot_grid(p1,p2, p3, p4, p5, p6, nrow=2, labels = 'auto')
+p
+ggsave('kwg2.pdf', p,width = 14, height = 7.5, units = 'in', useDingbats=F )
+ggsave('kwg2.png', p,width = 14, height = 7.5, dpi = 300)

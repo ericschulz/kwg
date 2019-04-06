@@ -28,7 +28,7 @@ axisScale <- function(vec1, vec2){ #Finds the larger of the two axis limits that
 
 
 cor2D<-data.frame(lambda1=dt$lambda, lambda2=de$lambda)
-cor2D$lambdadensity <- fields::interp.surface(MASS::kde2d(de$lambda, dt$lambda), cor2D[,c("lambda1", "lambda2")]) #bivariate point density
+cor2D$lambdadensity <- fields::interp.surface(MASS::kde2d(de$lambda, dt$lambda), cbind(de$lambda, dt$lambda)) #bivariate point density
 
 
 p1 <- ggplot(cor2D, aes(lambda1, lambda2, fill=lambdadensity, alpha = 1/lambdadensity)) +
@@ -43,7 +43,7 @@ p1 <- ggplot(cor2D, aes(lambda1, lambda2, fill=lambdadensity, alpha = 1/lambdade
   coord_cartesian(xlim=c(0,axisScale(cor2D$lambda1, cor2D$lambda2)), ylim=c(0,axisScale(cor2D$lambda1, cor2D$lambda2)))+
   annotate("text", x = 0.3, y = 1.15, label = "r[tau] == '.85'", parse=TRUE, size=6)+
   theme(title = element_text(family = 'serif'))+
-  theme_minimal()+
+  theme_classic()+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -56,7 +56,7 @@ p1
 
 
 cor2D<-data.frame(beta1=dt$beta, beta2=de$beta)
-cor2D$betadensity <- fields::interp.surface(MASS::kde2d(de$beta, dt$beta), cor2D[,c("beta1", "beta2")]) #bivariate point density
+cor2D$betadensity <- fields::interp.surface(MASS::kde2d(de$beta, dt$beta), cbind(de$beta, dt$beta)) #bivariate point density
 
 
 p2 <- ggplot(cor2D, aes(beta1, beta2, fill=betadensity, alpha = 1/betadensity)) +
@@ -68,10 +68,10 @@ p2 <- ggplot(cor2D, aes(beta1, beta2, fill=betadensity, alpha = 1/betadensity)) 
   scale_y_continuous(expand=c(0,0), limits=c(0,axisScale(cor2D$beta1, cor2D$beta2))) +
   xlab(expression(beta[1]))+
   ylab(expression(beta[2])) +
-  coord_cartesian(xlim=c(0,axisScale(cor2D$beta1, cor2D$beta2)), ylim=c(0,axisScale(cor2D$beta1, cor2D$beta2)))+
+  coord_cartesian(xlim=c(0,axisScale(cor2D$beta1, cor2D$beta2)), ylim=c(0,axisScale(cor2D$beta1, cor2D$beta2)), expand =T)+
   annotate("text", x = 0.2, y = .65, label = "r[tau] == '.75'", parse=TRUE, size=6)+
   theme(title = element_text(family = 'serif'))+
-  theme_minimal()+
+  theme_classic()+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -84,8 +84,7 @@ p2
 
 
 cor2D<-data.frame(tau1=dt$tau, tau2=de$tau)
-cor2D$taudensity <- fields::interp.surface(MASS::kde2d(de$tau, dt$tau), cor2D[,c("tau1", "tau2")]) #bivariate point density
-
+cor2D$taudensity <- fields::interp.surface(MASS::kde2d(de$tau, dt$tau), cbind(de$tau, dt$tau)) #bivariate point density
 
 p3 <- ggplot(cor2D, aes(tau1, tau2, fill=taudensity, alpha = 1/taudensity)) +
   geom_point(pch=21, size =3, color='black')+
@@ -99,7 +98,7 @@ p3 <- ggplot(cor2D, aes(tau1, tau2, fill=taudensity, alpha = 1/taudensity)) +
   coord_cartesian(xlim=c(0,axisScale(cor2D$tau1, cor2D$tau2)), ylim=c(0,axisScale(cor2D$tau1, cor2D$tau2)))+
   annotate("text", x = 0.05, y = .137, label = "r[tau] == '.81'", parse=TRUE, size=6)+
   theme(title = element_text(family = 'serif'))+
-  theme_minimal()+
+  theme_classic()+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -110,11 +109,11 @@ p3 <- ggplot(cor2D, aes(tau1, tau2, fill=taudensity, alpha = 1/taudensity)) +
         legend.position="none")+ggtitle(expression("Temperature parameter"~tau))
 p3
 
-library(gridExtra)
+library(cowplot)
+p <- plot_grid(p1,p2,p3,nrow = 1)
+ggsave("recovery.pdf", p, width=14/1.6, height=5/1.6, units = 'in', useDingbats =F)
+ggsave("recovery.png", p, width=14/1.6, height=5/1.6, dpi=300)
 
-pdf("recovery.pdf", width=14/1.6, height=5/1.6)
-grid.arrange(p1,p2,p3, nrow=1)
-dev.off()
 
 dat<-read.csv("kwgdata.csv")
 dat$agegroup<-ifelse(dat$age<9, "7-8", dat$age)
