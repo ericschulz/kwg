@@ -51,9 +51,9 @@
 - [2](#plots) **Bonus plot**: Figure 2 in our manuscript, showing the bonus round results.
  
 ## E. Experiment
-- 1. Install cordova: `npm install -g cordova`
-- 2. Navigate to ~/tablet/www/ and add browser to the cordova environment: `cordova platform add browser`
-- 3. run the experiment: `cordova run browser`
+1. Install cordova: `npm install -g cordova`
+2. Navigate to `~/E_Experiment/www/` and add browser to the cordova environment: `cordova platform add browser`
+3. run the experiment: `cordova run browser`
 
 ## F. Paper
 
