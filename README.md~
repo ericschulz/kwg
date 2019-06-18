@@ -47,12 +47,21 @@
 <a name="plots"></a>
 - [1](#plots) **Main plot**: Figure 1 in our manuscript, showing all behavioral and modeling results.
    
-<a name="functionstats--func"></a>
-- [4.2](#plots) **Deriving theoretical peridctions**: Don't use `null`, `undefined`, or any value except upper case string constants in your enums. This includes initial, undecided or unknown states
-
+<a name="plots"></a>
+- [2](#plots) **Bonus plot**: Figure 2 in our manuscript, showing the bonus round results.
+ 
 ## Experiment
 
 ## Paper
 
+<a name="plots"></a>
+- [1](#paper) **Manuscript**: Full manuscript as pdf-file. This can also be found on [Biorxiv](https://www.biorxiv.org/content/10.1101/327593v2 "Searching for rewards like a child means less generalization and more directed exploration") 
+   
+<a name="plots"></a>
+- [2](#paper) **Main tex file**: Main tex file for producing the manuscript.
+
+<a name="plots"></a>
+- [2](#paper) **Bib tex file**: Bib tex file containing all of the references.
+ 
 
 

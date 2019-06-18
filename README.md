@@ -54,5 +54,14 @@
 
 ## Paper
 
+<a name="plots"></a>
+- [1](#paper) **Manuscript**: Full manuscript as pdf-file. This can also be found on [Biorxiv](https://www.biorxiv.org/content/10.1101/327593v2 "Searching for rewards like a child means less generalization and more directed exploration") 
+   
+<a name="plots"></a>
+- [2](#paper) **Main tex file**: Main tex file for producing the manuscript.
+
+<a name="plots"></a>
+- [2](#paper) **Bib tex file**: Bib tex file containing all of the references.
+ 
 
 
