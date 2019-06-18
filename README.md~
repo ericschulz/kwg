@@ -45,7 +45,7 @@
 ## Plots
 
 <a name="plots"></a>
-- [4.1](#plots) **Gaussian process learning theory**: Always model your enums as uppercase string constants, e.g. `"WAITING"`, `"IN_PROGRESS"` and `"COMPLETED"`
+- [1](#plots) **Gaussian process learning theory**: Always model your enums as uppercase string constants, e.g. `"WAITING"`, `"IN_PROGRESS"` and `"COMPLETED"`
    
 <a name="functionstats--func"></a>
 - [4.2](#plots) **Deriving theoretical peridctions**: Don't use `null`, `undefined`, or any value except upper case string constants in your enums. This includes initial, undecided or unknown states

@@ -6,24 +6,24 @@
 ## A: Walk-throughs
 
 <a name="walkthroughs"></a>
-- [1] **Behavioral Results**: Walks you through all of the reported behavioral results, i.e. every single test reported in our paper, including effect sizes and Bayes Factors.
+- [1](#walkthroughs) **Behavioral Results**: Walks you through all of the reported behavioral results, i.e. every single test reported in our paper, including effect sizes and Bayes Factors.
 
 <a name="walkthroughs"></a>
-- [2] **Bonus round results**: Walks you through the reported bonus round results, i.e. all of the tests reported in our paper concerning the 10 round including effect sizes and Bayes Factors.
+- [2](#walkthroughs) **Bonus round results**: Walks you through the reported bonus round results, i.e. all of the tests reported in our paper concerning the 10 round including effect sizes and Bayes Factors.
 
 <a name="walkthroughs"></a>
-- [3] **Modeling results**: Walks you through the reported modeling results, i.e. all of the tests reported in our paper concerning the modeling and parameter estimate results including effect sizes and Bayes Factors.
+- [3](#walkthroughs) **Modeling results**: Walks you through the reported modeling results, i.e. all of the tests reported in our paper concerning the modeling and parameter estimate results including effect sizes and Bayes Factors.
 
 ## B: Data
 
 <a name="data"></a>
-- [1] **Full data**: This is the raw data of all participants. We use the same data set but named "kwgdata.csv" in all of our analyses. Both data sets can be found in this folder.
+- [1](#data)  **Full data**: This is the raw data of all participants. We use the same data set but named "kwgdata.csv" in all of our analyses. Both data sets can be found in this folder.
 
 <a name="data"></a>
-- [2] **Model data**: This is the data, both the predictive accuracy and parameter estimates, for the GP-UCB model. We use the same data set but named "rbfucb.csv" in all of our analyses. Both data sets can be found in this folder.
+- [2](#data)  **Model data**: This is the data, both the predictive accuracy and parameter estimates, for the GP-UCB model. We use the same data set but named "rbfucb.csv" in all of our analyses. Both data sets can be found in this folder.
 
 <a name="data"></a>
-- [3] **Learning curves data**: This is the data for the simulated learning curves. We use the same data set but named "learningcurves.csv" in all of our analyses. Both data sets can be found in this folder.
+- [3](#data)  **Learning curves data**: This is the data for the simulated learning curves. We use the same data set but named "learningcurves.csv" in all of our analyses. Both data sets can be found in this folder.
 
 ## C: Code
 
