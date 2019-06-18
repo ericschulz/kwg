@@ -2,13 +2,13 @@
 ####  Repository for "Searching for rewards like a child means less generalization and more directed exploration"
 ####  Schulz, Wu, Ruggerri and Meder (Psychological Science, 2019)
 
-## Walk-throughs
+## A: Walk-throughs
 
 <a name="walkthroughs"></a>
-- [1.1](#introduction) **Set-up**: Introduces the set-up of the whole thesis and explains why function learning is an important topic for both psychologists and machine learning researchers.
+- [1] **Behavioral Results**: Walks you through all of the reported behavioral results, i.e. every single test reported in our paper, including effect sizes and Bayes Factors.
 
 <a name="walkthroughs"></a>
-- [1.2]( **Outline**: Outlines the structure of the thesis and foreshadows the main findings and the overall conclusion.
+- [2] **Behavioral Results**: Walks you through all of the reported behavioral results, i.e. every single test reported in our paper, including effect sizes and Bayes Factors.
 
 ## Data
 

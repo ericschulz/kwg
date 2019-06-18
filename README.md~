@@ -2,24 +2,13 @@
 ####  Repository for "Searching for rewards like a child means less generalization and more directed exploration"
 ####  Schulz, Wu, Ruggerri and Meder (Psychological Science, 2019)
 
-## Table of Contents
-
-  A. [Walk-throughs: See a detailed walk through of our data analysis](#walkthroughs)
-  B. [Data: Access all the data reported in our paper](#data)
-  C. [Code: Access all the code used to analyze our data](#code)
-  D. [Plots: See every plot produced for our paper](#plots)
-  E. [Experiment: Access the source code for our experiment](#experiment)
-  F. [Paper: Access the tex-code-exploitation](#paper)
-
-
-
-## Walk-throughs
+## A: Walk-throughs
 
 <a name="walkthroughs"></a>
-- [1.1](#introduction) **Set-up**: Introduces the set-up of the whole thesis and explains why function learning is an important topic for both psychologists and machine learning researchers.
+- [1] **Set-up**: Introduces the set-up of the whole thesis and explains why function learning is an important topic for both psychologists and machine learning researchers.
 
 <a name="walkthroughs"></a>
-- [1.2]( **Outline**: Outlines the structure of the thesis and foreshadows the main findings and the overall conclusion.
+- [2] **Behavioral Results**: Walks you through all of the reported behavioral results, i.e. every single test reported in our paper, including effect sizes and Bayes Factors.
 
 ## Data
 
