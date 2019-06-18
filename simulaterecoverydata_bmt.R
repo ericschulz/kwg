@@ -118,7 +118,7 @@ for (nid in 1:160){
     for (trial in 1:25){
       #output by GP with particular parameter settings
       #don't forget mean centering and standardization
-      out<-bayesianMeanTracker(x=t(X[trial,]), y=(y[trial]-25)/50, theta=parVec, prevPost = prevPost)
+      out<-bayesianMeanTracker(x=X[trial,], y=(y[trial]-25)/50, theta=parVec, prevPost = prevPost)
       prevPost<-out
       #utility vector by UCB
       utilityVec<-ucb(out, beta)
@@ -181,7 +181,7 @@ p3<-ggplot(dd, aes(x=trial, y=mu, group=interaction(Condition, Age), col=Age, li
   #labs
   ylab("Reward")+xlab("Trial")+
   #scales
-  scale_y_continuous(breaks=c(25,30,35,40,45))+
+  #scale_y_continuous(breaks=c(25,30,35,40,45))+
   scale_x_continuous(breaks=seq(0,26,5))+
   #theme
   theme_minimal()+
@@ -190,7 +190,7 @@ p3<-ggplot(dd, aes(x=trial, y=mu, group=interaction(Condition, Age), col=Age, li
   #theme
   theme(text = element_text(size=fontsize,  family="sans")) +
   #titlte
-  ggtitle("C: Learning curves")+
+  ggtitle("c) Learning curves")+
   #theme
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))
 p3

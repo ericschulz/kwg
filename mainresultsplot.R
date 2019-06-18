@@ -428,6 +428,6 @@ p6<-ggplot(dd, aes(x=trial, y=mu, group=interaction(Cond, Age), col=Age, linetyp
         legend.box.margin=margin(-1,-1,-15,-10))
 p6
 #create tikz of all plots in a grid
-pdf(file = "bigplot.pdf", width = 14, height = 7.5)
+pdf(file = "bigplot.pdf", width = 14, height = 7.5, useDingBats=F)
 grid.arrange(p1,p2, p3, p4, p5, p6, nrow=2)
 dev.off()
