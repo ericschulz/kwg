@@ -13,15 +13,15 @@
 <a name="walkthroughs"></a>
 - [3] **Modeling results**: Walks you through the reported modeling results, i.e. all of the tests reported in our paper concerning the modeling and parameter estimate results including effect sizes and Bayes Factors.
 
-## Data
+## B: Data
 
 <a name="data"></a>
-- [2.1](#data) **A brief history of function learning research**: Summarizes findings on function learning that are prior to the 1990s, with a particular focus on Broadbent, Carroll, and Brehmer. 
+- [1] **Full data**: This is the raw data of all participants. We use the same data set but named "kwgdata.csv" in all of our analyses. Both data sets can be found in this folder.
 
 <a name="data"></a>
-- [2.2](#data) **Rule-based theories of function learning**: Explains the rule-based perspective on human function learning, including some of the main drawbacks of this approach such as the problem of infinite rules.
+- [2] **Model data**: This is the data, both the predictice accuracy and parameter estimates, for the GP-UCB model. We use the same data set but named "rbfucb.csv" in all of our analyses. Both data sets can be found in this folder.
 
-## Code
+## C: Code
 
 <a name="functionstats--weight"></a>
 - [3.1](#code) **The weight-space view of function learning**: Always model your enums as uppercase string constants, e.g. `"WAITING"`, `"IN_PROGRESS"` and `"COMPLETED"`
