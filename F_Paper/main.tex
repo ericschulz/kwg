@@ -1,0 +1,280 @@
+\documentclass[a4paper,man, floatsintext, natbib]{apa6}
+\usepackage[american]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{caption}
+\usepackage{tabulary}
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage{times}
+\usepackage{csquotes}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{multirow, makecell}
+\usepackage{tabularx,booktabs} 
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{afterpage}
+\usepackage[noend]{algpseudocode}
+\usepackage{floatpag}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{soul}
+\usepackage{eurosym}
+\newcommand{\gvec}[1]{\mbox{\boldmath$#1$}} 
+\newcommand{\gmat}[1]{\mbox{\boldmath$#1$}}
+\usepackage{array}
+\usepackage{color}
+\definecolor{Green}{RGB}{10,200,100}
+\definecolor{Red}{RGB}{255,0,0}
+\definecolor{Blue}{RGB}{30,144,255}
+\usepackage[normalem]{ulem}
+\newcommand{\es}[1]{\textcolor{Green}{[Eric: #1]}}  
+\newcommand{\sg}[1]{\textcolor{Red}{[Charley: #1]}} 
+\newcommand{\bj}[1]{\textcolor{Blue}{[Bjorn: #1]}} 
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\makeatletter
+\AtBeginDocument{%
+	\renewcommand{\APACjournalVolNumPages}[4]{%
+		\Bem{#1}%             journal
+		\ifx\@empty#2\@empty
+		\else
+		\unskip, \Bem{#2}%  volume
+		\fi
+		\ifx\@empty#3\@empty
+		\else
+		\unskip%      issue number
+		\fi
+		\ifx\@empty#4\@empty
+		\else
+		\unskip, {#4}%      pages
+		\fi
+	}
+}
+\makeatother
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist 
+
+%%%%%%%%%%%%%%%%%%
+%TITLE & AUTHORS
+%%%%%%%%%%%%%%%%%%
+%Last names
+\title{\textbf{Searching for rewards like a child means less generalization and more directed exploration}}
+\shorttitle{Searching for rewards like a child}
+\fourauthors{Eric Schulz}{Charley M. Wu}{Azzurra Ruggeri}{Bj\"orn Meder}
+\fouraffiliations{Harvard University}{Max Planck Institute for Human Development}{Max Planck Institute for Human Development and Technical University Munich}{Max Planck Institute for Human Development and University of Erfurt}
+\authornote{Correspondence should be addressed to Eric Schulz, Department of Psychology, Harvard University, 52 Oxford Street, Cambridge, MA 02138, United States. Email: ericschulz@fas.harvard.edu}
+\rightheader{Schulz, Wu, Ruggeri, \& Meder}
+\leftheader{Searching for rewards like a child}
+
+
+%%%%%%%%%%%%%%%%%%
+%ABSTRACT
+%%%%%%%%%%%%%%%%%%
+\abstract{How do children and adults differ in their search for rewards? We consider three different hypotheses that attribute developmental differences to either children's increased random sampling, more directed exploration towards uncertain options, or narrower generalization. Using a search task in which noisy rewards are spatially correlated on a grid, we compare 55 younger children (age 7-8), 55 older children (age 9-11), and 50 adults (age 19-55) in their ability to successfully generalize about unobserved outcomes and balance the exploration-exploitation dilemma. Our results show that children explore more eagerly than adults, but obtain lower rewards. Building a predictive model of search to disentangle the unique contributions of the three hypotheses of developmental differences, we find robust and recoverable parameter estimates indicating that children generalize less and rely on directed exploration more than adults. We do not, however, find reliable differences in terms of random sampling.}
+%Keywords
+\keywords{exploration-exploitation, development, generalization, search, multi-armed bandit task}
+\begin{document}
+%Title
+\maketitle
+
+%%%%%%%%%%%%%%%%%%
+%INTRODUCTION
+\section{Introduction}
+
+Alan Turing (\citeyear{turing1950computing}) famously believed that in order to build a General Artificial Intelligence, one must create a machine that can learn like a child. Indeed, recent advances in machine learning often contain references to child-like learning and exploration \citep{riedmiller2018learning}. Yet little is known about how children actually explore and search for rewards in their environments, and in what ways their behavior differs from adults.
+
+In the course of learning through interactions with the environment, all organisms (biological or machine) are confronted with the \emph{exploration-exploitation dilemma} \citep{mehlhorn2015unpacking}. This dilemma highlights two opposing goals. The first is to explore unfamiliar options that provide useful information for future decisions, yet may result in poor immediate rewards. The second is to exploit options known to have high expectations of reward, but potentially forgo learning about unexplored options. 
+
+In addition to balancing exploration and exploitation, another crucial ingredient for adaptive search behavior is a mechanism that can \emph{generalize} beyond observed outcomes, thereby guiding search and decision making by forming inductive beliefs about novel options. For example, from a purely combinatorial perspective, it only takes a few features and a small range of values to generate a pool of options vastly exceeding what could ever be explored in a lifetime. Nonetheless, humans of all ages manage to generalize from limited experiences in order to choose from amongst a set of potentially unlimited possibilities. Thus, a model of human search also needs to provide a mechanism for generalization. 
+
+Previous research has found extensive variability and developmental differences in children's and adults' search behavior, which not only result from a progressive refinement of basic cognitive functions (e.g., memory or attention), but also derive from systematic changes in the computational principles driving behavior \citep{palminteri2016computational}. In particular, developmental differences in learning and decision making have been explained by appealing to three hypothesized mechanisms: children sample more randomly, explore more eagerly, or generalize more narrowly than adults.
+
+In this paper, we investigate how these three mechanisms are able to explain developmental differences in exploration-exploitation behavior. We provide a precise characterization of these competing ideas in a formal model, which is used to predict behavior in a search task, where noisy and continuous rewards are spatially correlated. Using behavioral markers, interpreting parameter estimates from computational models, and analyzing judgments about unexplored options, our results converge on the finding that children generalize less, but engage in more directed exploration than adults. We do not, however, find reliable developmental differences in random exploration. These results enrich our understanding of maturation in learning and decision making, demonstrating that children explore using uncertainty-guided mechanisms rather than simply behaving more randomly.
+
+\subsection*{A tale of three mechanisms} 
+\subsubsection{Development as cooling off} 
+Because optimal solutions to the exploration-exploitation dilemma are generally intractable \citep{bellman1952theory}, heuristic alternatives are frequently employed. In particular, learning under the demands of the exploration-exploitation trade-off has been described using at least two distinct strategies \citep{wilson2014humans}. One such strategy is increased \emph{random exploration}, which uses noisy, random sampling to learn about new options. 
+
+A key finding in the psychological literature is that children tend to try out more options than adults \citep{cauffman2010age, mata2013foraging}. This has been interpreted as evidence for higher levels of random exploration in children, and has been loosely compared to algorithms of simulated annealing from computer science \citep{gopnik2017changes}, where the amount of random exploration gradually reduces over time. Children can be described as having higher temperature parameters, where the learner initially samples very randomly across a large set of possibilities, before eventually focusing on a smaller subset \citep{gopnik2015younger}. This temperature parameter is expected to ``cool off'' with age, leading to lower levels of random exploration in late childhood and adulthood. 
+
+\subsubsection{Development as reduction of directed exploration} 
+
+A second strategy to tackle the exploration-exploitation dilemma is to use \emph{directed exploration} by preferentially sampling highly uncertain options in order to gain more information and reduce uncertainty about the environment. Directed exploration has been formalized by introducing an ``uncertainty bonus'' that values the exploration of lesser known options \citep{auer2002using}, with behavioral markers found in a number of studies \citep{frank2009prefrontal,wu2018exploration}.
+
+Directed exploration treats information as intrinsically valuable by inflating rewards by their estimated uncertainty \citep{auer2002using}. This leads to a more sophisticated \emph{uncertainty-guided sampling} strategy that could also explain developmental differences. Indeed, the literature on self-directed learning shows that children are clearly capable of exploring their environment in a systematic, directed fashion. Already infants tend to value the exploration of uncertain options \citep{schulz2015infants}, and children can balance theory and evidence in simple exploration tasks \citep{bonawitz2012children} and are able to efficiently adapt their search behavior to different environmental structures \citep{Ruggeri2015}. Moreover, children can sometimes even outperform adults in the self-directed learning of unusual relationships \citep{Lucas2014}. Both directed and random exploration do not have to be mutually exclusive mechanisms, with recent research finding signatures of both types of exploration in adolescent and adult participants \citep{somerville2017charting,gershman2018deconstructing,wilson2014humans}.
+
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=\linewidth]{modelOverviewpaper.pdf}
+\caption{Overview of task and model. (a) Screenshot of experiment in the middle of a round with partially revealed grid. Expected reward (b) and estimated uncertainty (c) based on observations in (a) using Gaussian Process regression as a model of generalization. (d) Upper confidence bounds of each option based on a weighted sum of panels b and c. (e) Choice probabilities of softmax function. Panels (b-e) use median participant parameter estimates. (f) Overview of the experimental design (g) and types of environments. (h) Correlations of rewards between different options decay exponentially as a function of their distance, where higher values of $\lambda$ lead to slower decays and broader generalizations. (i) An illustration of UCB sampling using a univariate example, where the expected reward (black line) and estimated uncertainty (gray ribbon; for different values of $\beta$) are summed up. Higher values of $\beta$ value the exploration of uncertain options more strongly (compare the argmax of the two beta values, indicated by the cross and the triangle). (j) Overview of softmax function, where higher values of the temperature parameter $\tau$ lead to increased random exploration.}
+\label{fig:gpucboverview}
+\end{figure}
+
+
+\subsubsection{Development as refined generalization} 
+Rather than explaining development as a change in how we explore given some beliefs about the world, \emph{generalization-based accounts} attribute developmental differences to the way we form our beliefs in the first place. Many studies have shown that human learners use structured knowledge about the environment to guide exploration \citep{schulz2017putting}, where the quality of these representations and the way that people utilize them to generalize across experiences can have a crucial impact on search behavior. Thus, development of more complex cognitive processes \citep{Blanco2016}, leading to broader generalizations, could also account for the observed developmental differences in sampling behavior.
+
+The notion of generalization as a mechanism for explaining developmental differences has a long standing history in psychology. For instance, \cite{piaget1964part} assumed that children learn and adapt to different situational demands by the processes of assimilation (applying a previous concept to a new task) and accommodation (changing a previous concept in the face of new information). Expanding on Piaget's idea, \cite{klahr1982nonmonotone} proposed generalization as a crucial developmental process, in particular the mechanism of regularity detection, which supports generalization and improves over the course of development. More generally, the implementation of various forms of decision making \citep{hartley2015neuroscience} could be constrained by the capacity for complex cognitive processes, which become more refined over the life span. For example, although younger children attend more frequently to irrelevant information than older children \citep{hagen1973development}, they can be prompted to attend to the relevant information by marking the most relevant cues, whereupon they eventually select the best alternative \citep{davidson1996effects}. Thus, children may indeed be able to apply uncertainty-driven exploratory strategies, but lack the appropriate task representation to successfully implement them.
+
+\section*{A task to study generalization and exploration}
+We study the behavior of both children and adults in a \emph{spatially correlated multi-armed bandit} task \citep[Fig.~\ref{fig:gpucboverview}a;][]{wu2018exploration}, where rewards are distributed on a grid characterized by spatial correlation (i.e., similar rewards cluster together; Fig.~\ref{fig:gpucboverview}g; see also White, 2013, for a similar task\nocite{whitegrid}) and the search horizon is vastly smaller than the number of options. Efficient search and accumulation of rewards in such an environment requires two critical components. First, participants need to learn about the underlying spatial correlation in order to generalize from observed rewards to unseen options. This is crucial because there are considerably more options than can be explored within the limited search horizon. Second, participants need a sampling strategy that achieves a balance between exploring new options and exploiting known options with high rewards. 
+
+\section{Methods}
+\subsubsection*{Participants} 
+We recruited 55 younger children (range: 7 to 8, 26 female, $M_{age}$=7.53; SD=0.50), 55 older children (range: 9 to 11, 24 female, $M_{age}$=9.95; SD=0.80), and 50 adults (range: 18 to 55, 25 female, $M_{age}$=33.76; SD= 8.53) from the Berlin Natural History Museum in Germany. We determined the different age groups and the number of participants per group before data collection commenced, based on existing findings showing strong developmental differences between age 7 and 10 in children's question-asking and active search behavior \citep{Ruggeri2015,davidson1991developmental}. Participants were paid up to \euro{}3.50 for taking part in the experiment, contingent on performance (range: \euro{}2.00 to \euro{}3.50, $M_{reward}$=\euro{}2.67; SD=0.50). Informed consent was obtained from all participants. 
+
+
+\subsubsection*{Design} The experiment used a between-subjects design, where participants were randomly assigned to one of two different classes of environments (Fig.~\ref{fig:gpucboverview}g), with \emph{smooth environments} having stronger spatial correlations than \emph{rough environments}. We generated 40 of each class of environments from a radial basis function kernel (see below), with $\lambda_{smooth}=4$ and $\lambda_{rough}=1$. On each round, a new environment was sampled (without replacement) from the set of 40 environments, which was then used to define a bivariate function on the grid, with each observation including additional normally distributed noise $\epsilon \sim \mathcal{N}\left(0,1 \right)$. The task was presented over ten rounds on different grid worlds drawn from the same class of environments. The first round was a tutorial round and the last round was a bonus round in which participants sampled for 15 trials and then had to generate predictions for five randomly chosen and previously unobserved tiles on the grid. Participants had a search horizon of 25 trials per grid, including repeat clicks.
+
+\subsubsection*{Materials and procedure} 
+%Change 1
+Participants were introduced to the task through a tutorial round, which familiarized them with the spatial correlation of rewards and the possibility of re-clicking tiles. Moreover, participants were told that they would be rewarded based on the sum of sampled points. Afterwards, they had to complete three comprehension questions before starting the task. At the beginning of each round, one random tile was revealed and participants could click on any of the tiles (including re-clicks) on the grid until the search horizon was exhausted. Clicking an unrevealed tile displayed the numerical value of the reward along with a corresponding color aid, where darker colors indicated higher rewards. Per round, observations were scaled to a randomly drawn maximum value in the range of 35 to 45, so that the value of the global optima could not be easily guessed. Re-clicked tiles could show some variations in the observed value due to noise. For repeat clicks, the most recent observation was displayed numerically, while the color of the tile corresponded to the mean of all previous observations. In the bonus round, participants sampled for 15 trials and were then asked to generate predictions for five randomly selected and previously unobserved tiles. This was explained to them before the bonus round started. Additionally, participants had to indicate how certain they were about each prediction on a scale from 0 to 10. Afterwards, they had to select one of the five tiles before continuing with the round.
+
+Participants were awarded up to five stars at the end of each round (e.g., 4.6 out of 5), based on the ratio of their average reward to the global maximum. The performance bonus was calculated based on the average number of stars earned in each round, excluding the tutorial round. 5 out of 5 stars corresponded to \euro 3.50, while each half star interval reduced the bonus by \euro 0.50 until a minimum bonus of \euro 0.50.
+
+
+\subsection*{A combined model of generalization and exploration}
+We use a formal model that combines generalization with a sampling strategy accounting for both directed and random exploration \citep{wu2018exploration}, and use it to predict each participant's out-of-sample search behavior. The generalization component is based on \emph{Gaussian Process} (GP) regression, which is a Bayesian function learning approach theoretically capable of learning any stationary function \citep{williams2006gaussian} and has been found to effectively describe human behavior in explicit function learning tasks \citep{lucas2015rational}. The GP component is used to adaptively learn a value function, which generalizes the limited set of observed rewards over the entire search space using Bayesian inference.
+
+The GP prior is completely determined by the choice of a kernel function $k(\mathbf{x}, \mathbf{x}')$, which encodes assumptions about how points in the input space are related to each other. A common choice of this function is the \emph{radial basis function}:
+
+\begin{align}
+k(\mathbf{x}, \mathbf{x}')=\exp\left(-\frac{||\mathbf{x}-\mathbf{x}'||^2}{\lambda}\right),
+\end{align}
+
+\noindent where the length-scale parameter $\lambda$ encodes the extent of spatial generalization between options (tiles) in the grid. The assumptions of this kernel function are similar to the gradient of generalization historically described by \cite{shepard1987toward}, which also models generalization as an exponentially decaying function of the stimulus similarity distance (see Fig.~\ref{fig:gpucboverview}h), which has been observed across a wide range of stimuli and organisms. As an example, generalization with $\lambda=1$ corresponds to the assumption that the rewards of two neighboring tiles are correlated by $r=0.6$, and that this correlation effectively decays to zero for options further than three tiles apart. We treat $\lambda$ as a free parameter in our model comparison in order to assess age-related differences in the capacity for generalization. 
+
+Given different possible options $\mathbf{x}$ to sample from (i.e., tiles on the grid), GP regression generates normally distributed beliefs about rewards with expectation $\mu(\mathbf{x})$ and estimated uncertainty $\sigma(\mathbf{x})$ (Fig.~\ref{fig:gpucboverview}b,c). A sampling strategy is then used to map the beliefs of the GP onto a valuation for sampling each option at a given time. Crucially, such a sampling strategy must address the exploration-exploitation dilemma. One frequently applied heuristic for solving this dilemma is \emph{Upper Confidence Bound} (UCB) sampling \citep{srinivas2009gaussian}, which evaluates each option based on a weighted sum of expected reward and estimated uncertainty:
+\begin{align}
+\text{UCB}(\mathbf{x})=\mu(\mathbf{x})+\beta\sigma(\mathbf{x})
+\end{align}
+where $\beta$ models the extent to which uncertainty (in addition to mean rewards) is valued positively and therefore directly sought out. This strategy corresponds to directed exploration because it encourages the sampling of options with higher uncertainty according to the underlying generalization model (see Fig.~\ref{fig:gpucboverview}i). We treat the exploration parameter $\beta$ as a free parameter to assess how much participants value the reduction of uncertainty (i.e., engage in directed exploration). As an example, an exploration bonus of $\beta=0.5$ means participants would prefer an option $x_1$ expected to have reward $\mu(x_1)=30$ and uncertainty $\sigma(x_1)=10$, over option $x_2$ expected to have reward $\mu(x_2)=34$ and uncertainty $\sigma(x_2)=1$. This is because sampling $x_1$ is expected to reduce a larger amount of uncertainty, even though $x_2$ has a higher expected reward ($\text{UCB}(x_1|\beta=0.5)=35$ vs. $\text{UCB}(x_2|\beta=0.5)=34.5$).
+
+Finally, we use a softmax function to map the upper confidence bound values, $\text{UCB}(\mathbf{x})$, of our proposed Gaussian Process-Upper Confidence Bound sampling model onto choice probabilities:
+\begin{align}
+p(\mathbf{x}) = \frac{\exp(\text{UCB}(\mathbf{x})/\tau)}{\sum_{j=1}^{N}\exp(\text{UCB}(\mathbf{x}_j)/\tau)}, 
+\end{align}
+where $\tau$ is the temperature parameter governing the amount of randomness in sampling behavior. If $\tau$ is high (higher temperatures), then participants are assumed to sample more randomly, whereas if $\tau$ is low (cooler temperatures), the choice probabilities are concentrated on the highest valued options (Fig.~\ref{fig:gpucboverview}j). Thus, $\tau$ encodes the tendency towards random exploration. We treat $\tau$ as a free parameter to assess the extent of random exploration in children and adults (see Supplemental Material for alternative implementations such as $\epsilon$-greedy sampling and estimation of optimal parameters).
+
+In summary, GP-UCB contains three different parameters: the length-scale $\lambda$ capturing the extent of generalization, the exploration bonus $\beta$ describing the extent of directed exploration, and the temperature parameter $\tau$ modulating random exploration. These three parameters directly correspond to the three postulated mechanisms of developmental differences in various decision making tasks and can also be robustly recovered (see Supplemental Material). 
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=\linewidth]{bigplot.pdf}
+\caption{Main results. (a) Tukey box plots of rewards, showing the distribution of all choices for all participants, with the horizontal line representing the median and box showing the interquartile range of the distribution. Each dot is the participant-wise mean and diamonds indicate group means. (b) Histograms of distances between consecutive choices by age group and condition, with a distance of zero corresponding to a repeat click. The vertical red line marks the difference between a repeat click and sampling a different option. (c) Mean reward over trials by condition (solid lines for smooth and dashed lines for rough environments) and age group (color). Error bars indicate the standard error of the mean. (d) Tukey box plots showing the results of the model comparison between Gaussian Process (GP) and Mean Tracker (MT) models by age group. Each point is a single subject and group means are shown as a diamond. (e) Tukey box plot of cross-validated parameters retrieved from the GP-UCB model by age group, where each point is the mean estimate per subject and diamonds indicate the group means. Outliers are removed for readability, but are included in all statistical tests (see Supplemental Material). (f) Learning curves simulated by GP-UCB model using mean participant parameter estimates. Error bars indicate the standard error of the mean.} 
+\label{fig:behavioral} 
+\end{figure}
+
+\section{Results}
+\subsection{Behavioral results} 
+Participants gained higher rewards in smooth than in rough environments (Fig.~\ref{fig:behavioral}a; comparing participants' average rewards: $t(158)=10.51$, $p<.001$, $d=1.66$, 95\% CI=$[1.30,2.02]$, $BF>100$), suggesting they made use of the spatial correlations and performed better when correlations were stronger. Adults performed better than older children (Fig.~\ref{fig:behavioral}a; $t(103)=4.91$, $p<.001$, $d=0.96$, 95\% CI=$[0.55,1.37]$, $BF>100$), who in turn performed somewhat better than younger children ($t(108)=2.42$, $p=.02$, $d=0.46$, 95\% CI=$[0.08,0.84]$, $BF=2.68$). Analyzing the distance between consecutive choices (Fig.~\ref{fig:behavioral}b) revealed that participants sampled more locally (smaller distances) in smooth compared to rough environments ($t(158)=-3.83$, $p<.001$, $d=0.61$, 95\% CI=$[0.29,0.93]$, $BF>100$). Adults sampled more locally than older children ($t(103)=-3.9$, $p<.001$, $d=0.76$, 95\% CI=$[0.36,1.16]$, $BF>100$), but there was no difference between younger and older children ($t(108)=1.76$, $p=.08$, $d=0.34$, 95\% CI=$[-0.05,0.72]$, $BF=0.80$). Importantly, adults sampled fewer unique options than older children ($14.5$ vs. $21.7$; $t(103)=6.77$, $d=1.32$, 95\% CI=$[0.90,1.75]$, $p<.001$, $BF>100$), whereas the two children groups did not differ in how many unique options they sampled ($21.7$ vs. $22.7$; $t(108)=1.27$, $d=0.24$, 95\% CI=$[-0.14,0.62]$, $p=.21$, $BF=0.4$).
+
+Looking at the learning curves (i.e., average rewards over trials; Fig.~\ref{fig:behavioral}c), we found a positive rank-correlation between mean rewards and trial number (Spearman's $\rho=.12$, $t(159)=6.12$, $p<.001$, 95\% CI=$[0.08, 0.16]$, $BF>100$). Although this correlation did not differ between the rough and smooth condition ($t(158)=-0.43$, $p=.67$, $d=0.07$, 95\% CI=$[-0.24, 0.38]$, $BF=0.19$), it was significantly higher for adults than for older children ($0.29$ vs $0.08$, $t(103)=5.90$, $p<.001$, $d=1.15$, 95\% CI=$[0.74, 1.57]$, $BF=0.19$, $BF>100$). The correlation between trials and rewards did not differ between younger and older children ($0.04$ vs $0.08$; $t(108)=-1.87$, $p=.06$, $d=0.36$, 95\% CI=$[-0.02, 0.74]$, $BF=0.96$). Therefore, adults learned faster, while children explored more extensively (see Supplemental Material for further behavioral analyses). 
+
+\begin{figure}[t!]
+\centering
+\includegraphics[width=\linewidth]{judgements.pdf}
+\caption{Bonus round results. (a) Mean absolute error of participant predictions about the rewards of unobserved tiles. (b) Certainty judgments, where 0 is least certain and 10 is most certain. (c) Standardized predictions and certainty estimates, which shows how much the estimated reward and certainty influenced choice (relative to judgments about non-chosen options). All figures show Tukey box plots (over all data points), with participant means as dots and group means as diamonds.}
+\label{fig:judge} 
+\end{figure}
+
+\subsection{Model comparison}
+
+We compared the GP-UCB model with an alternative model that does not generalize across options but is a powerful Bayesian model for reinforcement learning across independent reward distributions (\emph{Mean Tracker}; MT). Model comparisons are based on leave-one-round-out cross-validation error, where we fit each model combined with the UCB sampling strategy to each participant using a training set omitting one round, and then assess predictive performance on the hold-out round. Repeating this procedure for every participant and all rounds (apart from the tutorial and the bonus rounds), we calculated the standardized \emph{predictive accuracy} for each model (pseudo-$R^2$ comparing out-of-sample log loss to random chance), where 0 indicates chance-level predictions and 1 indicates theoretically perfect predictions (see Supplemental Material for full model comparison with additional sampling strategies). The results of this comparison are shown in Fig.~\ref{fig:behavioral}d. The GP-UCB model predicted participants' behavior better overall ($t(159)=13.28$, $p<.001$, $d=1.05$, 95\% CI=$[0.82, 1.28]$, $BF>100$), and also for adults ($t(49)=5.98$, $p<.001$, $d=0.85$, 95\% CI=$[0.43, 1.26]$, $BF>100$), older ($t(54)=10.92$, $p<.001$, $d=1.48$, 95\% CI=$[1.05, 1.90]$, $BF>100$) and younger children ($t(54)=6.77$, $p<.001$, $d=0.91$, 95\% CI=$[0.52, 1.31]$, $BF>100$). The GP-UCB model predicted adults' behavior better than that of older children ($t(103)=4.33$, $p<.001$, $d=0.85$, 95\% CI=$[0.44, 1.25]$, $BF>100$), which in turn was better predicted than behavior of younger children ($t(108)=3.32$, $p=.001$, $d=0.63$, 95\% CI=$[0.24, 1.02]$, $BF=24.8$).
+
+\subsection{Developmental differences in parameter estimates} 
+We analyzed the mean participant parameter estimates of the GP-UCB model (Fig.~\ref{fig:behavioral}e) to assess the contributions of the three mechanisms (generalization, directed exploration, and random exploration) towards developmental differences. 
+
+We found that adults generalized more than older children, as indicated by larger $\lambda$-estimates (Mann-Whitney-$U=2001$, $p<.001$, $r_\tau=0.32$, 95\% CI=$[0.18, 0.47]$, $BF>100$), whereas the two groups of children did not differ significantly in their extent of generalization ($U=1829$, $p=.06$, $r_\tau=0.15$, 95\% CI=$[-0.01, 0.30]$, $BF=1.7$). Furthermore, older children valued the reduction of uncertainty more than adults (i.e., higher $\beta$-values; $U=629$, $p<.001$, $r_\tau=0.39$, 95\% CI=$[0.25, 0.52]$, $BF>100$), whereas there was no difference between younger and older children ($U=1403$, $p=.51$, $r_\tau=0.05$, 95\% CI=$[-0.10, 0.21]$, $BF=0.2$). Critically, whereas there were strong differences between children and adults for the parameters capturing generalization and directed exploration, there was no reliable difference in the softmax temperature parameter $\tau$, with no difference between older children and adults ($W = 1718$, $p=.03$, $r_\tau=0.17$, 95\% CI=$[0.01, 0.34]$, $BF=0.7$) and only anecdotal differences between the two groups of children ($W = 1211$, $p=.07$, $r_\tau=0.14$, 95\% CI=$[-0.01, 0.30]$ $BF=1.4$).\footnote{We also assessed if there was a correlation between age and parameter estimates for the adult participants. This revealed no relation between age and $\lambda$ ($r=-0.11$, $t(48)=-0.73$, $p=.47$, $BF=0.4$), $\beta$ ($r=0.15$, $t(48)=-1.03$, $p=.31$, $BF=0.5$) or $\tau$ ($r=-0.09$, $t(48)=-0.62$, $p=.53$, $BF=0.4$). However, these results should be interpreted with caution as they are only based on 50 subjects. Future research should try to further map out the developmental trajectories of these parameters across the whole lifespan.} This suggests that the amount of random exploration did not reliably differ by age group (see Supplemental Materials for other implementations of random exploration). 
+Thus, our modeling results converge on the same conclusion as the behavioral results. Children explore more than adults, yet instead of exploring randomly, children's exploration behavior seems to be directed toward options with high uncertainty. Additionally, our parameter estimates are robustly recoverable (see Supplemental materials) and can be used to simulate learning curves that reproduce the differences between the age groups as well as between smooth and rough conditions (Fig.~\ref{fig:behavioral}f).
+
+
+\subsection{Bonus round}
+In the bonus round, each participant predicted the expected rewards and the underlying uncertainty for five randomly sampled unrevealed tiles after having made 15 choices on the grid. We first calculated the mean absolute error between predictions and the true expected value of rewards (Fig.~\ref{fig:judge}a). Prediction error was higher for rough compared to smooth environments ($t(158)=4.93$, $p<.001$, $d=0.78$, 95\% CI$=[0.46, 1.10]$, $BF>100$), reflecting the lower degree of spatial correlation that could be utilized to evaluate unseen options. Surprisingly, older children were as accurate as adults ($t(103)=0.28$, $p=.78$, $d=0.05$, 95\% CI=$[-0.44, 0.33]$, $BF=0.2$), but younger children performed worse than older children ($t(108)=3.14$, $p=.002$, $d=0.60$, 95\% CI=$[0.21, 0.99]$, $BF=15$). Certainty judgments did not differ between the smooth and rough environments ($t(158)=1.13$, $p=.26$, $d=0.18$, 95\% CI=$[-0.13, 0.49]$, $BF=0.2$) nor between the different age groups (max-$BF=0.1$). 
+
+Of particular interest is how judgments about the expectation of rewards and perceived uncertainty relate to the eventual choice from amongst the five options (implemented as a 5-alternative forced choice). We standardized the estimated reward and confidence judgment of each participant's chosen tile by dividing by the sum of the estimates for all five options (Fig.~\ref{fig:judge}c). Thus, larger standardized estimates reflect a larger contribution of either high reward or high certainty on the choice. Whereas there was no difference between age groups in terms of the estimated reward of the chosen option (max-$BF=0.1$), we found that younger children preferred options with higher uncertainty slightly more than older children ($t(108)=2.22$, $p=.03$, $d=0.42$, 95\% CI=$[0.04, 0.80]$, $BF=1.8$), and substantially more than adults ($t(103)=2.82$, $p=.006$, $d=0.55$, 95\% CI=$[0.16, 0.95]$, $BF=6.7$). This further corroborates our previous analyses, showing that the sampling behavior of children is more directed toward uncertain options than that of adults. 
+
+\section*{Discussion}
+We examined three potential sources of developmental differences in a complex learning and decision-making task: random exploration, directed exploration, and generalization. Using a paradigm that combines both generalization and search, we found that adults gained higher rewards and exploited more strongly, whereas children sampled more unique options, thereby gaining lower rewards but exploring the environment more extensively. Using a computational model with parameters directly corresponding to the three hypothesized mechanisms of developmental differences, we found that children generalized less and were guided by directed exploration more strongly than adults. They did not, however, explore more randomly than adults. 
+
+%Change 2
+Our results shed new light on the developmental trajectories in generalization and exploration, casting children not as merely prone to more random sampling behavior, but as directed explorers who are hungry for information in their environment. Our conclusions are drawn from converging evidence combining analysis of behavioral data and computational modeling. Moreover, our findings are highly recoverable and also hold for other formalizations of random exploration instead of using the softmax temperature parameter (see Supplemental Materials).
+
+Interestingly, related work by \cite{somerville2017charting} also found no developmental difference in random exploration, but increasing directed exploration across early adolescence, which stabilized in adulthood. We believe that our results are not necessarily incompatible with that finding. Somerville and colleagues defined directed exploration using horizon-sensitive exploration (i.e,. strategic planning of exploration), whereas we define directed exploration as uncertainty-guided exploration via a greedy upper confidence bound algorithm. Thus, children may have higher tendencies towards directed exploration in a stepwise-greedy fashion, but fail to exhibit such tendencies when planning ahead for multiple steps, perhaps due to cognitive limitations. This opens up further possibilities for studying different mechanisms of directed exploration and how they relate to one another.
+
+Our results provide strong evidence for developmental differences in directed exploration driven by both expected rewards and the associated uncertainty. 
+These findings complement existing research on age-related differences in risk- and uncertainty-related behavior \citep{josef2016stability}. For instance, adolescents and adults systematically differ in their tolerance of options with outcomes that have unknown probabilities, providing converging evidence that uncertainty is valued differently depending on age \citep{tymula2012adolescents}. Importantly, in our task a sampling strategy that only seeks to reduce uncertainty is inferior to the ``optimistic'' UCB strategy in predicting children's and adults' behavior (see SOM-U for details). This result demonstrates how reward expectations and uncertainty interact to produce decision-making behavior that balances the exploration-exploitation trade-off adaptively as a function of age. Future work should attempt to further disentangle different interpretations of uncertainty seeking formally, for example, by not familiarizing participants with the underlying environments or by manipulating the level of noise in the outcomes directly.
+
+Furthermore, it is surprising that there were no meaningful differences between younger and older children's parameter estimates. Since this indicates that directed exploration might be present even earlier than expected, future studies could apply our paradigm to investigate exploration behavior in even younger children.
+
+Our results showing a developmental increase in generalization can also be related to previous findings showing a developmental increase in the use of task structure knowledge in model-based reward learning \citep{decker2016creatures}. Because the generalization parameter $\lambda$ can be mathematically equated to the speed of learning about the underlying function \citep{sollich1999learning}, generalization and learning are inextricably linked in our task. There are however other uses of the term ``generalization'' in the psychological literature. For example, children are known to generalize words or categories more broadly, a tendency that decreases over time, trading-off with the capacity to form more precise episodic memories \citep{keresztes2018hippocampal}. While we focus on generalization in the sense used by Shepard (i.e., generalization across stimuli), it is an outstanding question how this type of generalization relates to word and category generalization. It would be a fruitful avenue for future research to connect these two domains in a unifying theory of generalization. 
+
+In our current study, we have assessed only environments with stationary reward distributions. However, given that children displayed increased exploration behavior, we believe that they could perform especially well in environments that change over rounds. Whether or not children would outperform adults in changing environments remains an important question for future research.
+
+Ultimately, our results suggest that to fulfill Alan Turing's dream of creating a child-like AI, we need to incorporate generalization and curiosity-driven exploration mechanisms \citep{riedmiller2018learning}.
+
+
+
+\subsection{Author Contributions}
+\noindent
+All authors developed the study concept and contributed to the study design. E. Schulz and C.M. Wu performed the data analysis and interpretation under the supervision of B. Meder and A. Ruggeri. E. Schulz and C.M. Wu drafted the manuscript, and B. Meder and A. Ruggeri provided critical revisions. All authors approved the final version of the manuscript for submission.
+
+\subsection{Acknowledgements}
+\noindent
+We thank all of the families who participated in this research, the Berlin Natural History Museum where we conducted the study, Andreas Sommer for collecting the data, and Federico Meini for help with programming the experiment.
+
+\subsection{Declaration of Conflicting Interests}
+\noindent
+The authors declared that they had no conflicts of interest with respect to their authorship or the publication of this article.
+
+\subsection{Funding}
+\noindent
+This work was supported by the Max Planck Society and DFG-grant ME 3717/2-2 to BM. ES is supported by the Harvard Data Science Initiative. CMW is supported by the International Max Planck Research School on Adapting Behavior in a Fundamentally Uncertain World. 
+ 
+\subsection{Open Practices}
+\noindent
+All code and data have been made publicly available and can be accessed at \url{https://git.io/vppsK}
+
+\bibliography{bib}
+
+
+%Start of reviewed SI (1000 word limit)
+\clearpage
+
+%%%%%%%%%% Merge with supplemental materials %%%%%%%%%%
+%%%%%%%%%% Prefix a "S" to all equations, figures, tables and reset the counter %%%%%%%%%%
+\setcounter{equation}{0}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\setcounter{page}{1}
+\makeatletter
+\renewcommand{\theequation}{S\arabic{equation}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\bibnumfmt}[1]{[S#1]}
+\renewcommand{\citenumfont}[1]{S#1}
+%%%%%%%%%% Prefix a "S" to all equations, figures, tables and reset the counter %%%%%%%%%%
+
+\begin{center}
+
+\textbf{\large Reviewed Supplementary Materials} 
+\end{center}
+%\section{Reviewed Supplementary Materials}
+\input{SOM-R.tex} %Put into seperate file to make it easier for word counts
+
+\clearpage
+\setcounter{equation}{0}
+\setcounter{page}{1}
+\begin{center}
+\textbf{\large Unreviewed Supplementary Materials}
+\end{center}
+%\section{Unreviewed Supplementary Materials}
+\input{SOM-U.tex}
+
+\end{document}

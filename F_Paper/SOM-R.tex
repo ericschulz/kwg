@@ -1,0 +1,29 @@
+%Reviewed SI; 1000 word limit
+
+\subsection*{Statistical tests}
+We report both frequentist and Bayesian statistics throughout the paper. Whereas frequentist tests are reported as either Student's $t$-tests (for the behavioral data and model comparisons) or Mann-Whitney-$U$ tests (for parameter comparisons), we rely on Bayes factors ($BF$) to quantify the relative evidence the data provide in favor of the alternative hypothesis ($H_A$) over the null ($H_0$).
+
+For testing hypotheses regarding the behavioral data and the model comparison, we use the default two-sided Bayesian $t$-test for independent samples using a Jeffreys-Zellner-Siow prior with its scale set to $\sqrt{2}/2$, as suggested by \citet{rouder2009bayesian}. The prior is truncated below $0$ for the directional tests performed to create Figure~\ref{fig:bayesfactor}, which shows pairwise comparisons between the different models. All other statistical tests are non-directional as defined by a symmetric prior.
+
+For testing hypotheses regarding the model parameters, we use the frequentist Mann-Whitney-$U$ test and report Kendall's $r_\tau$ as an effect size. The Bayesian test is based on performing posterior inference over the test statistics and assigning a prior by means of a parametric yoking procedure \citep{van2017bayesian}. This then leads to a posterior distribution for Kendall's $r_\tau$, and via the Savage-Dickey density ratio test, also yields an interpretable Bayes factor. The null hypothesis posits that parameters do not differ between the two groups, while the alternative hypothesis posits an effect and assigns an effect size using a Cauchy distribution with the scale parameter set to $1/\sqrt{2}$.
+
+We also report 95\%-Confidence Intervals (95\% CI) for both effect sizes, Cohen's $d$ (estimated directly) and $r_{\tau}$ (bootstrapped estimators).
+
+\subsection*{Other forms of random exploration}
+A softmax function with a temperature parameter $\tau$ is only one way to define random exploration. Another approach towards assessing random exploration is so-called $\epsilon$-greedy exploration. Given $k$ number of arms (64 in our experiment), $\epsilon$-greedy exploration chooses
+\begin{align}
+p(\mathbf{x}) = 
+\begin{cases}
+ 1-\epsilon, &\text{if } \arg\max UCB(\mathbf{x})\\
+\epsilon/(k-1), &\text{otherwise}
+\end{cases}
+\end{align}
+where $\epsilon$ is a free parameter. We test the $\epsilon$-greedy method of exploration by using it instead of a softmax function in combination with the GP regression model and a UCB-sampling strategy. The results of this comparison show that the $\epsilon$-greedy exploration model was systematically worse at predicting behavior than the softmax model reported in the main text (mean predictive accuracy: $R^2=0.21$, $t(159)=6.67$, $p<.001$, $d=0.53$, 95\% CI=$[0.30, 0.75]$, $BF>100$). Additionally, the softmax model also had better predictive accuracy than the $\epsilon$-greedy exploration model for adults (mean predictive accuracy: $R^2=0.26$, $t(49)=9.29$ $p<.001$, $d=1.31$, 95\% CI=$[0.88, 1.75]$, $BF>100$), and for older children (mean predictive accuracy: $R^2=0.21$, $t(54)=3.60$, $p<.001$, $d=0.49$, 95\% CI=$[0.10, 0.87]$, $BF=38.5$), but not for younger children (mean predictive accuracy: $R^2=0.17$, $t(54)=0.33$, $p=.74$, $d=0.04$, 95\% CI=$[-0.33, 0.42]$, $BF=0.2$).
+
+Next, we looked for age-related differences in the parameter estimates of the $\epsilon$-greedy model\footnote{Note that interpreting estimates of inferior computational models can be problematic and should only be done with caution.}, specifically the directed exploration parameter $\beta$ and the alternative random exploration parameter $\epsilon$. As in the softmax-parameterized models, we find larger $\lambda$-estimates for adults than for older children ($0.99$ vs. $0.24$, $U = 1975$, $r_\tau=0.31$, 95\% CI=$[0.14, 0.46]$, $p<.001$, $BF>100$), whereas the two children groups do not differ in their $\lambda$-estimates ($0.31$ vs. $0.24$, $U = 1299$, $r_\tau=0.10$, 95\% CI=$[-0.07, 0.24]$, $p=.20$, $BF=0.4$). Furthermore, we find more directed exploration (larger $\beta$ parameters) for older children than for adults ($17.30$ vs. $5.38$, $U = 555$, $r_\tau=0.42$, 95\% CI=$[0.30, 0.56]$, $p<.001$, $BF>100$), but no difference between the two groups of children ($17.20$ vs. $17.30$, $U=1684$,$r_\tau=0.12$, 95\% CI=$[-0.07, 0.24]$, $p=.3$, $BF=0.27$). We also found a difference in $\epsilon$-greedy exploration parameter between adults and older children ($0.00012$ vs. $0.00014$, $U=960$,$r_\tau=0.21$, 95\% CI=$[0.07, 0.37]$, $p=.007$, $BF=6.95$), but not between the two groups of children ($0.00014$ vs. $0.00016$, $U= 1774$, $r_\tau=0.12$, 95\% CI=$[-0.03, 0.28]$, $p=.11$, $BF=0.46$).
+Notice that the relative proportion of random exploration decisions according to the $\epsilon$-parameter estimates is so small, that over the 200 choices in our task, this accounts for a difference of approximately 1 in every 250 choices. Thus, there is almost no practical difference in participants' $\epsilon$-parameters. The overall age-related effect in the $\epsilon$-greedy analysis was also larger for directed exploration than for $\epsilon$-greedy exploration ($r_\tau=0.40$ vs. $r_\tau=0.25$). 
+
+Thus, there are two reasons to believe that children are driven more strongly by directed than by random exploration. Firstly, the GP-UCB model combined with a softmax formulation of random exploration predicted participants better than an $\epsilon$-greedy model, and finds no age-related difference in terms of random exploration described by the temperature parameter $\tau$. Secondly, parameter estimates of the $\epsilon$-greedy model find only small and practically meaningless age-related difference in $\epsilon$-exploration, but again a large age-related differences in the directed exploration parameter $\beta$.
+
+
+\clearpage
