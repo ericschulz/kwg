@@ -1,7 +1,7 @@
 d1<-read.csv("gprecovergp.csv")
 d2<-read.csv("bmtrecovergp.csv")
-d3<-read.csv("gprecoverbmt.csv")
-d4<-read.csv("bmtrecoverbmt.csv")
+d3<-read.csv("rbfrecbmt.csv")
+d4<-read.csv("bmtrecbmt.csv")
 
 d1$r2<-1-d1$X.2/(-25*log(1/64))
 d2$r2<-1-d2$X.2/(-25*log(1/64))
@@ -58,7 +58,7 @@ p1<-ggplot(data = dp1) +
   scale_fill_manual(values = c(cbPalette[c(4,5)]))+
   scale_color_manual(values = c(cbPalette[c(4,5)]))+
   #labs
-  xlab("Model")+ylab(expression("Predictive accuracy"~r^2))+
+  xlab("Model")+ylab(expression("Predictive accuracy"~R^2))+
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
@@ -75,3 +75,9 @@ p1<-ggplot(data = dp1) +
 pdf("recoverycompare.pdf", width=8, height=4)
 p1
 dev.off()
+
+sum(ddply(d3, ~id, summarize, m=median(r2))$m-ddply(d4, ~id, summarize, m=median(r2))$m<=0)
+library(lsr)
+cohensD(ddply(d3, ~id, summarize, m=median(r2))$m-ddply(d4, ~id, summarize, m=median(r2))$m)
+mean((ddply(d3, ~id, summarize, m=median(r2))$m))
+     

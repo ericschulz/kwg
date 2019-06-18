@@ -130,7 +130,7 @@ pall<-ggplot(data = dp1) +
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
   scale_x_continuous(breaks = c(1,2,3),labels = c(expression(M(x)),expression(V(x)), expression(UCB(x))))+
-  ggtitle("A: MT predictive performance")+
+  ggtitle("(a) MT predictive performance")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -192,7 +192,7 @@ p2<-ggplot(data = dp2) +
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
   scale_x_continuous(breaks = c(1,2,3),labels = c("7-8", "9-11", ">18"))+
-  ggtitle("B: MT-UCB parameter estimates")+
+  ggtitle("(b) MT-UCB parameter estimates")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -253,7 +253,7 @@ p3<-ggplot(data = dp3) +
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
   scale_x_continuous(breaks = c(1,2,3),labels = c("7-8", "9-11", ">18"))+
-  ggtitle("C: MT-Mean greedy parameter estimates")+
+  ggtitle("(c) MT-Mean greedy parameter estimates")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -316,7 +316,7 @@ p4<-ggplot(data = dp4) +
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
   scale_x_continuous(breaks = c(1,2,3),labels = c("7-8", "9-11", ">18"))+
-  ggtitle("D: MT-Variance greedy parameter estimates")+
+  ggtitle("(d) MT-Variance greedy parameter estimates")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 

@@ -115,7 +115,7 @@ p1<-ggplot(data = dp1) +
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
-  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("A: Performance")+
+  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("(a) Performance")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -147,7 +147,7 @@ p2<-ggplot(subset(dat,dist<=10 & trial !=0), aes(x = dist, y = Age, fill=Age, he
   #0 to 10
   scale_x_continuous(breaks = seq(0,10,2))+
   #title
-  ggtitle("B: Search behavior")+
+  ggtitle("(b) Search behavior")+
   #expand
   scale_y_discrete(expand = c(0, 0)) +
   #theme fontsize
@@ -196,7 +196,7 @@ p3<-ggplot(dd, aes(x=trial, y=mu, group=interaction(Cond, Age), col=Age, linetyp
   #theme
   theme(text = element_text(size=fontsize,  family="sans")) +
   #titlte
-  ggtitle("C: Learning curves")+
+  ggtitle("(c) Learning curves")+
   #theme
   theme(legend.position ="top", 
         strip.background=element_blank(), 
@@ -292,7 +292,7 @@ p4<-ggplot(data = dp4) +
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
-  scale_x_continuous(breaks = c(1,2),labels = c("MT","GP"))+ggtitle("D: Model comparison")+
+  scale_x_continuous(breaks = c(1,2),labels = c("MT","GP"))+ggtitle("(d) Model comparison")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -360,7 +360,8 @@ p5<-ggplot(data = dp5) +
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
-  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("E: Parameter estimates")+
+  coord_cartesian(ylim = c(0,2))+
+  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("(e) Parameter estimates")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -410,7 +411,7 @@ p6<-ggplot(dd, aes(x=trial, y=mu, group=interaction(Cond, Age), col=Age, linetyp
   scale_color_manual(values = cbPalette[c(7,6,1)])+
   theme(text = element_text(size=fontsize,  family="sans")) +
   #title
-  ggtitle("F: Simulated learning curves")+
+  ggtitle("(f) Simulated learning curves")+
   theme(legend.position ="top", 
         strip.background=element_blank(), 
         legend.key=element_rect(color=NA))+

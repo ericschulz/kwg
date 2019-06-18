@@ -102,7 +102,7 @@ p1<-ggplot(data = dp1) +
   #no legend
   theme(legend.position="none", strip.background=element_blank(), legend.key=element_rect(color=NA))+
   #labe x-axis
-  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("A: Reaction times")+
+  scale_x_continuous(breaks = c(1,2,3),labels = c("7-8","9-11", ">18"))+ggtitle("(a) Reaction times")+
   #various theme changes including reducing white space and adding axes
   theme(axis.line.x = element_line(color="grey20", size = 1),
         axis.line.y = element_line(color="grey20", size = 1), 
@@ -121,7 +121,7 @@ p2 <- ggplot(subset(dat,prev>=0 & prev<=50 & trial>0 & time <5000), aes(x=prev, 
   stat_summary(fun.y = mean, geom = 'line')+
   stat_summary(fun.data = mean_se, geom = 'ribbon', alpha = 0.5, color=NA) +
   ylab("Reaction time on t+1")+
-  xlab('Reward on t')+ggtitle("B: Reaction time and rewards")+
+  xlab('Reward on t')+ggtitle("(b) Reaction time and rewards")+
   #ylim(c(0,50))+
   scale_fill_manual(values = c(cbPalette[c(7,6)], "grey40"))+
   scale_color_manual(values = c(cbPalette[c(7,6)], "grey40"))+
@@ -145,3 +145,19 @@ library(gridExtra)
 pdf("reactiontimes.pdf", width=10, height=4)
 grid.arrange(p1,p2, nrow=1)
 dev.off()
+
+cohensd.ci <- function(d, n1, n2, ci = 0.95) {
+  t <- d * sqrt((n1 * n2)/(n1 + n2))
+  capture.output(
+    fit <- compute.es::tes(t = t, n.1 = n1, n.2 = n2, level = 100 * ci),
+    file = "NUL"
+  )
+  c(lower.ci = fit$l.d, upper.ci = fit$u.d)
+}
+d<-read.csv("kwgdata.csv")
+head(d)
+cohensd.ci(d=0.70, n1=length(unique(subset(d, cond=="Rough")$id)), n2=length(unique(subset(d, cond=="Smooth")$id)))
+cohensd.ci(d=0.51, n1=length(unique(subset(d, agegroup=="9-11")$id)), n2=length(unique(subset(d, agegroup==">18")$id)))
+cohensd.ci(d=0.43, n1=length(unique(subset(d, agegroup=="9-11")$id)), n2=length(unique(subset(d, agegroup=="7-8")$id)))
+cohensd.ci(d=1.08, n1=length(unique(subset(d, agegroup=="9-11")$id)), n2=length(unique(subset(d, agegroup==">18")$id)))
+cohensd.ci(d=0.37, n1=length(unique(subset(d, agegroup=="9-11")$id)), n2=length(unique(subset(d, agegroup=="7-8")$id)))

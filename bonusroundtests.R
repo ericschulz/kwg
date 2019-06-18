@@ -7,6 +7,7 @@ rm(list=ls())
 #packages
 packages <- c('plyr', 'ggplot2', 'jsonlite', 'lsr', 'BayesFactor')
 lapply(packages, require, character.only = TRUE)
+library(effsize)
 
 #rough and smooth environments
 environments1 <- fromJSON("kernelRough.json")
@@ -84,7 +85,7 @@ de<-ddply(dat, ~id+cond, summarize, mu=mean(error))
 t.test(subset(de, cond=="Rough")$mu, subset(de, cond=="Smooth")$mu, var.equal = TRUE)
 cohensD(subset(de, cond=="Rough")$mu, subset(de, cond=="Smooth")$mu)
 ttestBF(subset(de, cond=="Rough")$mu, subset(de, cond=="Smooth")$mu)
-
+cohen.d(subset(de, cond=="Rough")$mu, subset(de, cond=="Smooth")$mu)
 #Error by age
 dage<-ddply(dat, ~id+agegroup,summarize, mu=mean(error))
 
@@ -92,11 +93,14 @@ dage<-ddply(dat, ~id+agegroup,summarize, mu=mean(error))
 t.test(subset(dage, agegroup==">18")$mu, subset(dage, agegroup=="9-11")$mu, var.equal = TRUE)
 cohensD(subset(dage, agegroup==">18")$mu, subset(dage, agegroup=="9-11")$mu)
 ttestBF(subset(dage, agegroup==">18")$mu, subset(dage, agegroup=="9-11")$mu)
+cohen.d(subset(dage, agegroup==">18")$mu, subset(dage, agegroup=="9-11")$mu)
 
 #old children vs. young children
 t.test(subset(dage, agegroup=="9-11")$mu, subset(dage, agegroup=="7-8")$mu, var.equal = TRUE)
 cohensD(subset(dage, agegroup=="9-11")$mu, subset(dage, agegroup=="7-8")$mu)
 ttestBF(subset(dage, agegroup=="9-11")$mu, subset(dage, agegroup=="7-8")$mu)
+cohen.d(subset(dage, agegroup=="9-11")$mu, subset(dage, agegroup=="7-8")$mu)
+
 
 #Certainty judgements
 de<-ddply(dat, ~id+cond, summarize, mu=mean(cer))
@@ -104,6 +108,8 @@ de<-ddply(dat, ~id+cond, summarize, mu=mean(cer))
 t.test(subset(de, cond=="Rough")$mu, subset(de, cond=="Smooth")$mu, var.equal = TRUE)
 cohensD(subset(de, cond=="Rough")$mu, subset(de, cond=="Smooth")$mu)
 ttestBF(subset(de, cond=="Rough")$mu, subset(de, cond=="Smooth")$mu)
+cohen.d(subset(de, cond=="Rough")$mu, subset(de, cond=="Smooth")$mu)
+
 
 #certainty by age group
 dage<-ddply(dat, ~id+agegroup,summarize, mu=mean(cer))
@@ -139,9 +145,11 @@ anovaBF(cer~agegroup, data=ds)
 t.test(subset(ds, agegroup=="9-11")$cer, subset(ds, agegroup=="7-8")$cer, var.equal = TRUE)
 cohensD(subset(ds, agegroup=="9-11")$cer, subset(ds, agegroup=="7-8")$cer)
 ttestBF(subset(ds, agegroup=="9-11")$cer, subset(ds, agegroup=="7-8")$cer)
+cohen.d(subset(ds, agegroup=="9-11")$cer, subset(ds, agegroup=="7-8")$cer)
 
 #between the adults and young kids
 t.test(subset(ds, agegroup==">18")$cer, subset(ds, agegroup=="7-8")$cer, var.equal = TRUE)
 cohensD(subset(ds, agegroup==">18")$cer, subset(ds, agegroup=="7-8")$cer)
 ttestBF(subset(ds, agegroup==">18")$cer, subset(ds, agegroup=="7-8")$cer)
+cohen.d(subset(ds, agegroup==">18")$cer, subset(ds, agegroup=="7-8")$cer)
 

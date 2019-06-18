@@ -1,6 +1,17 @@
 de<-read.csv("recoveredgp.csv")
 dt<-read.csv("gpucbparams.csv")
 
+kendallci<-function(x,y){
+  tau<-cor(x,y, method="kendall")
+  d<-rep(0, 10000)
+  for (i in 1:10000){
+    ind<-sample(1:length(x), replace=TRUE)
+    d[i]<-tau-cor(x[ind],y[ind], method="kendall")
+  }
+  d<-quantile(d, probs = c(0.025, 0.975))
+  return(tau+d)
+}
+
 
 de$lambda<-exp(de$par1)
 de$beta<-exp(de$par2)
@@ -13,8 +24,11 @@ mymean<-function (x){mean(x[x<=5])}
 de$id<-rep(1:160, each=8)
 de<-ddply(de, ~id,summarize, lambda=mymean(lambda), beta=mymean(beta), tau=mymean(tau))
 cor.test(de$tau, dt$tau, method = "kendall")
+kendallci(de$tau, dt$tau)
 cor.test(de$beta, dt$beta, method = "kendall")
+kendallci(de$beta, dt$beta)
 cor.test(de$lambda, dt$lambda, method="kendall")
+kendallci(de$lambda, dt$lambda)
 
 
 betaCor <- cor.test(de$beta, dt$beta, method='kendall') #correlation test
@@ -152,6 +166,8 @@ wilcox.test(subset(dage, age==">18")$mu, subset(dage, age=="9-11")$mu)
 dd<-subset(dage, age %in% c(">18", "9-11"))
 #rank correlation as effect size
 cor(ifelse(dd$age==">18",1,0), dd$mu, method="kendall")
+kendallci(ifelse(dd$age==">18",1,0), dd$mu)
+
 #Bayes Factor
 outsim<-rankSumGibbsSampler(subset(dd, age==">18")$mu, subset(dd, age=="9-11")$mu)
 dense<- density(outsim$deltaSamples)
@@ -165,6 +181,8 @@ wilcox.test(subset(dage, age=="9-11")$mu, subset(dage, age=="7-8")$mu)
 dd<-subset(dage, age %in% c("7-8", "9-11"))
 #rank correlation of effect size
 cor(ifelse(dd$age=="9-11",1,0), dd$mu, method="kendall")
+kendallci(ifelse(dd$age=="9-11",1,0), dd$mu)
+
 #Bayes Factor
 outsim<-rankSumGibbsSampler(subset(dd, age=="7-8")$mu, subset(dd, age=="9-11")$mu)
 dense<- density(outsim$deltaSamples)
@@ -182,6 +200,7 @@ wilcox.test(subset(dage, age==">18")$mu, subset(dage, age=="9-11")$mu)
 dd<-subset(dage, age %in% c(">18", "9-11"))
 #rank correlation as effect size
 cor(ifelse(dd$age==">18",1,0), dd$mu, method="kendall")
+kendallci(ifelse(dd$age==">18",1,0), dd$mu)
 #get Bayes Factor
 outsim<-rankSumGibbsSampler(subset(dd, age==">18")$mu, subset(dd, age=="9-11")$mu)
 dense<- density(outsim$deltaSamples)
@@ -195,6 +214,7 @@ wilcox.test(subset(dage, age=="9-11")$mu, subset(dage, age=="7-8")$mu)
 dd<-subset(dage, age %in% c("7-8", "9-11"))
 #rank correlation for effect size
 cor(ifelse(dd$age=="9-11",1,0), dd$mu, method="kendall")
+kendallci(ifelse(dd$age=="9-11",1,0), dd$mu)
 #Bayes Factor
 outsim<-rankSumGibbsSampler(subset(dd, age=="7-8")$mu, subset(dd, age=="9-11")$mu)
 dense<- density(outsim$deltaSamples)

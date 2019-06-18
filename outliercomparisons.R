@@ -1,6 +1,7 @@
 library(plyr)
 library(BayesFactor)
 library(lsr)
+library(effsize)
 du<-read.csv("rbfucb.csv")
 dat<-read.csv("kwgdata.csv")
 
@@ -26,21 +27,25 @@ dall1<-subset(dall, lambda < 5)
 d<-ddply(dall1, ~age+id, summarize, m=mean(lambda))
 t.test(subset(d, age=="9-11")$m, subset(d, age==">18")$m, var.equal = TRUE)
 cohensD(subset(d, age=="9-11")$m, subset(d, age==">18")$m)
-ttestBF(subset(d, age=="9-11")$m, subset(d, age==">18")$m)        
+ttestBF(subset(d, age=="9-11")$m, subset(d, age==">18")$m) 
+cohen.d(subset(d, age=="9-11")$m, subset(d, age==">18")$m) 
 
 t.test(subset(d, age=="7-8")$m, subset(d, age=="9-11")$m, var.equal = TRUE)
 cohensD(subset(d, age=="7-8")$m, subset(d, age=="9-11")$m)
 ttestBF(subset(d, age=="9-11")$m, subset(d, age=="7-8")$m)        
+cohen.d(subset(d, age=="9-11")$m, subset(d, age=="7-8")$m)  
 
 dall1<-subset(dall, beta < 5)
 d<-ddply(dall1, ~age+id, summarize, m=mean(beta))
 t.test(subset(d, age=="9-11")$m, subset(d, age==">18")$m, var.equal = TRUE)
 cohensD(subset(d, age=="9-11")$m, subset(d, age==">18")$m)
 ttestBF(subset(d, age=="9-11")$m, subset(d, age==">18")$m)        
+cohen.d(subset(d, age=="9-11")$m, subset(d, age==">18")$m)
 
 t.test(subset(d, age=="7-8")$m, subset(d, age=="9-11")$m, var.equal = TRUE)
 cohensD(subset(d, age=="7-8")$m, subset(d, age=="9-11")$m)
 ttestBF(subset(d, age=="9-11")$m, subset(d, age=="7-8")$m)    
+cohen.d(subset(d, age=="9-11")$m, subset(d, age=="7-8")$m)    
 
 
 dall1<-subset(dall, tau < 5)
@@ -48,11 +53,12 @@ d<-ddply(dall1, ~age+id, summarize, m=mean(tau))
 t.test(subset(d, age=="9-11")$m, subset(d, age==">18")$m, var.equal = TRUE)
 cohensD(subset(d, age=="9-11")$m, subset(d, age==">18")$m)
 ttestBF(subset(d, age=="9-11")$m, subset(d, age==">18")$m)        
+cohen.d(subset(d, age=="9-11")$m, subset(d, age==">18")$m)  
 
 t.test(subset(d, age=="7-8")$m, subset(d, age=="9-11")$m, var.equal = TRUE)
 cohensD(subset(d, age=="7-8")$m, subset(d, age=="9-11")$m)
 ttestBF(subset(d, age=="9-11")$m, subset(d, age=="7-8")$m)    
-
+cohen.d(subset(d, age=="9-11")$m, subset(d, age=="7-8")$m) 
 
 
 dall1<-subset(dall, ! lambda %in% outlambda)
@@ -60,21 +66,26 @@ d<-ddply(dall1, ~age+id, summarize, m=mean(lambda))
 t.test(subset(d, age=="9-11")$m, subset(d, age==">18")$m, var.equal = TRUE)
 cohensD(subset(d, age=="9-11")$m, subset(d, age==">18")$m)
 ttestBF(subset(d, age=="9-11")$m, subset(d, age==">18")$m)        
+cohen.d(subset(d, age=="9-11")$m, subset(d, age==">18")$m)
+
 
 t.test(subset(d, age=="7-8")$m, subset(d, age=="9-11")$m, var.equal = TRUE)
 cohensD(subset(d, age=="7-8")$m, subset(d, age=="9-11")$m)
 ttestBF(subset(d, age=="9-11")$m, subset(d, age=="7-8")$m)        
+cohen.d(subset(d, age=="9-11")$m, subset(d, age=="7-8")$m)
 
 
 dall1<-subset(dall, ! beta %in% outbeta)
 d<-ddply(dall1, ~age+id, summarize, m=mean(beta))
 t.test(subset(d, age=="9-11")$m, subset(d, age==">18")$m, var.equal = TRUE)
 cohensD(subset(d, age=="9-11")$m, subset(d, age==">18")$m)
-ttestBF(subset(d, age=="9-11")$m, subset(d, age==">18")$m)        
+cohen.d(subset(d, age=="9-11")$m, subset(d, age==">18")$m)        
+
 
 t.test(subset(d, age=="7-8")$m, subset(d, age=="9-11")$m, var.equal = TRUE)
 cohensD(subset(d, age=="7-8")$m, subset(d, age=="9-11")$m)
 ttestBF(subset(d, age=="9-11")$m, subset(d, age=="7-8")$m)   
+cohen.d(subset(d, age=="9-11")$m, subset(d, age=="7-8")$m)         
 
 
 dall1<-subset(dall, ! beta %in% outtau)
@@ -82,7 +93,10 @@ d<-ddply(dall1, ~age+id, summarize, m=mean(tau))
 t.test(subset(d, age=="9-11")$m, subset(d, age==">18")$m, var.equal = TRUE)
 cohensD(subset(d, age=="9-11")$m, subset(d, age==">18")$m)
 ttestBF(subset(d, age=="9-11")$m, subset(d, age==">18")$m)        
+cohen.d(subset(d, age=="9-11")$m, subset(d, age==">18")$m)         
+
 
 t.test(subset(d, age=="7-8")$m, subset(d, age=="9-11")$m, var.equal = TRUE)
 cohensD(subset(d, age=="7-8")$m, subset(d, age=="9-11")$m)
-ttestBF(subset(d, age=="9-11")$m, subset(d, age=="7-8")$m)   
+ttestBF(subset(d, age=="9-11")$m, subset(d, age=="9-11")$m)   
+cohen.d(subset(d, age=="9-11")$m, subset(d, age=="9-11")$m)         

@@ -4,6 +4,14 @@
 #house keeping
 rm(list=ls())
 
+cohensd.ci <- function(d, n1, n2, ci = 0.95) {
+  t <- d * sqrt((n1 * n2)/(n1 + n2))
+  capture.output(
+    fit <- compute.es::tes(t = t, n.1 = n1, n.2 = n2, level = 100 * ci),
+    file = "NUL"
+  )
+  c(lower.ci = fit$l.d, upper.ci = fit$u.d)
+}
 #packages
 packages <- c('plyr', 'ggplot2', 'jsonlite', 'BayesFactor', 'lsr')
 lapply(packages, require, character.only = TRUE)
@@ -142,6 +150,16 @@ ttestBF(subset(dm, age=="7-8")$mu, subset(dm, age=="9-11")$mu)
 #Source Mann-Whitney-U-BF
 source("mannwhitbf.R")
 
+kendallci<-function(x,y){
+  tau<-cor(x,y, method="kendall")
+  d<-rep(0, 10000)
+  for (i in 1:10000){
+    ind<-sample(1:length(x), replace=TRUE)
+    d[i]<-tau-cor(x[ind],y[ind], method="kendall")
+  }
+  d<-quantile(d, probs = c(0.025, 0.975))
+  return(tau+d)
+}
 
 #LAMBDA:
 #get the estimates
@@ -154,6 +172,8 @@ wilcox.test(subset(dage, age==">18")$mu, subset(dage, age=="9-11")$mu)
 dd<-subset(dage, age %in% c(">18", "9-11"))
 #rank correlation as effect size
 cor(ifelse(dd$age==">18",1,0), dd$mu, method="kendall")
+kendallci(ifelse(dd$age==">18",1,0), dd$mu)
+
 #Bayes Factor
 outsim<-rankSumGibbsSampler(subset(dd, age==">18")$mu, subset(dd, age=="9-11")$mu)
 dense<- density(outsim$deltaSamples)
@@ -167,6 +187,8 @@ wilcox.test(subset(dage, age=="9-11")$mu, subset(dage, age=="7-8")$mu)
 dd<-subset(dage, age %in% c("7-8", "9-11"))
 #rank correlation of effect size
 cor(ifelse(dd$age=="9-11",1,0), dd$mu, method="kendall")
+kendallci(ifelse(dd$age=="9-11",1,0), dd$mu)
+
 #Bayes Factor
 outsim<-rankSumGibbsSampler(subset(dd, age=="7-8")$mu, subset(dd, age=="9-11")$mu)
 dense<- density(outsim$deltaSamples)
@@ -186,6 +208,8 @@ wilcox.test(subset(dage, age==">18")$mu, subset(dage, age=="9-11")$mu)
 dd<-subset(dage, age %in% c(">18", "9-11"))
 #rank correlation as effect size
 cor(ifelse(dd$age==">18",1,0), dd$mu, method="kendall")
+kendallci(ifelse(dd$age==">18",1,0), dd$mu)
+
 #get Bayes Factor
 outsim<-rankSumGibbsSampler(subset(dd, age==">18")$mu, subset(dd, age=="9-11")$mu)
 hist(outsim$deltaSamples)
@@ -203,6 +227,8 @@ wilcox.test(subset(dage, age=="9-11")$mu, subset(dage, age=="7-8")$mu)
 dd<-subset(dage, age %in% c("7-8", "9-11"))
 #rank correlation for effect size
 cor(ifelse(dd$age=="9-11",1,0), dd$mu, method="kendall")
+kendallci(ifelse(dd$age=="9-11",1,0), dd$mu)
+
 #Bayes Factor
 outsim<-rankSumGibbsSampler(subset(dd, age=="7-8")$mu, subset(dd, age=="9-11")$mu)
 dense<- density(outsim$deltaSamples)
@@ -217,6 +243,10 @@ dtau<-subset(dp, param=="tau")
 dage<-ddply(dtau, ~id+age,summarize, mu=mean(estimate))
 #do ranks
 #ANOVA is impossible so, we report the biggest BF, which was for 9-11 vs adults
+dd<-subset(dage, age %in% c(">18", "9-11"))
+cor(ifelse(dd$age==">18",1,0), dd$mu, method="kendall")
+kendallci(ifelse(dd$age==">18",1,0), dd$mu)
+
 outsim<-rankSumGibbsSampler(subset(dage, age=="9-11")$mu, subset(dage, age==">18")$mu)
 dense<- density(outsim$deltaSamples)
 ddense <- with(dense, approxfun(x, y, rule=1))

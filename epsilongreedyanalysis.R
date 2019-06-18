@@ -54,7 +54,7 @@ dat<-ddply(dat, ~id, summarize, age=agegroup[1], cond=cond[1])
 #new ids so they match the model comparison results
 dat$id<-1:160
 
-dd<-ddply(d,~id,summarize, tau=median(exp(par3)), beta=median(exp(par2)))
+dd<-ddply(d,~id,summarize, tau=median(exp(par3)), beta=median(exp(par2)), lambda=median(exp(par1)))
 dd$beta
 for (i in 1:nrow(dd)){
   Tau<-c(rep(dd$tau[i], 63),exp(5))
@@ -84,22 +84,47 @@ ttestBF(ds$r-dg$r)
 library(lsr)
 cohensD(ds$r-dg$r)
 mean(dg$r)
+library(effsize)
+cohen.d(ds$r, dg$r, paired = TRUE)
+
+ds$age<-dg$age<-ddply(dd,  ~id, summarize, age=age[1])$age
+
+cohen.d(subset(ds, age==">18")$r, subset(dg, age==">18")$r, paired=TRUE)
+cohen.d(subset(ds, age=="9-11")$r, subset(dg, age=="9-11")$r, paired=TRUE)
+cohen.d(subset(ds, age=="7-8")$r, subset(dg, age=="7-8")$r, paired=TRUE)
+
 
 source("mannwhitbf.R")
-wilcox.test(subset(dd, age==">18")$beta, subset(dd, age=="9-11")$beta)
+
+kendallci<-function(x,y){
+  tau<-cor(x,y, method="kendall")
+  d<-rep(0, 10000)
+  for (i in 1:10000){
+    ind<-sample(1:length(x), replace=TRUE)
+    d[i]<-tau-cor(x[ind],y[ind], method="kendall")
+  }
+  d<-quantile(d, probs = c(0.025, 0.975))
+  return(tau+d)
+}
+
+wilcox.test(subset(dd, age==">18")$lambda, subset(dd, age=="9-11")$lambda)
 da<-subset(dd, age %in% c(">18", "9-11"))
 #rank correlation as effect size
-cor(ifelse(da$age==">18",1,0), da$beta, method="kendall")
-outsim<-rankSumGibbsSampler(subset(da, age==">18")$beta, subset(da, age=="9-11")$beta)
+cor(ifelse(da$age==">18",1,0), da$lambda, method="kendall")
+kendallci(ifelse(da$age==">18",1,0), da$lambda)
+
+outsim<-rankSumGibbsSampler(subset(da, age==">18")$lambda, subset(da, age=="9-11")$lambda)
 dense<- density(outsim$deltaSamples)
 ddense <- with(dense, approxfun(x, y, rule=1))
 BF<-dcauchy(0, location = 0, scale = 1/sqrt(2), log = FALSE)/ddense(.3)
 print(BF)
 
-wilcox.test(subset(dd, age=="7-8")$tau, subset(dd, age=="9-11")$tau)
+wilcox.test(subset(dd, age=="7-8")$lambda, subset(dd, age=="9-11")$lambda)
 da<-subset(dd, age %in% c("7-8", "9-11"))
 #rank correlation as effect size
-cor(ifelse(da$age=="7-8",1,0), da$tau, method="kendall")
+cor(ifelse(da$age=="7-8",1,0), da$lambda, method="kendall")
+kendallci(ifelse(da$age=="7-8",1,0), da$beta)
+
 outsim<-rankSumGibbsSampler(subset(da, age=="7-8")$tau, subset(da, age=="9-11")$tau)
 dense<- density(outsim$deltaSamples)
 ddense <- with(dense, approxfun(x, y, rule=1))

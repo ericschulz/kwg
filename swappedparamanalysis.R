@@ -33,13 +33,14 @@ de<-d
 #LAMBDA:
 #get the estimates
 #mean per id as well as age
-dage<-ddply(de, ~id+age,summarize, mu=mean(lambda))
+dage<-ddply(de, ~id+age,summarize, mu=mean(beta))
 #Mann-Whitney-U of adults vs. older children
 wilcox.test(subset(dage, age==">18")$mu, subset(dage, age=="9-11")$mu)
 #get a subset
 dd<-subset(dage, age %in% c(">18", "9-11"))
 #rank correlation as effect size
 cor(ifelse(dd$age==">18",1,0), dd$mu, method="kendall")
+kendallci(ifelse(dd$age==">18",1,0), dd$mu)
 #Bayes Factor
 outsim<-rankSumGibbsSampler(subset(dd, age==">18")$mu, subset(dd, age=="9-11")$mu)
 dense<- density(outsim$deltaSamples)
@@ -70,6 +71,7 @@ wilcox.test(subset(dage, age=="7-8")$mu, subset(dage, age=="9-11")$mu)
 dd<-subset(dage, age %in% c("7-8", "9-11"))
 #rank correlation as effect size
 cor(ifelse(dd$age=="7-8",1,0), dd$mu, method="kendall")
+kendallci(ifelse(dd$age=="7-8",1,0), dd$mu)
 #get Bayes Factor
 outsim<-rankSumGibbsSampler(subset(dd, age=="7-8")$mu, subset(dd, age=="9-11")$mu)
 dense<- density(outsim$deltaSamples)
@@ -97,10 +99,10 @@ dage<-ddply(de, ~id+age,summarize, mu=mean(tau))
 #do ranks
 wilcox.test(subset(dage, age=="9-11")$mu, subset(dage, age=="7-8")$mu)
 #subset of children
-dd<-subset(dage, age %in% c("9-11", "7-8"))
+dd<-subset(dage, age %in% c("9-11", ">18"))
 #rank correlation for effect size
 cor(ifelse(dd$age=="9-11",1,0), dd$mu, method="kendall")
-
+kendallci(ifelse(dd$age=="9-11",1,0), dd$mu)
 
 #ANOVA is impossible so, we report the biggest BF, which was for 9-11 vs adults
 outsim<-rankSumGibbsSampler(subset(dd, age=="7-8")$mu, subset(dd, age=="9-11")$mu)

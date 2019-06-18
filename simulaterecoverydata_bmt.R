@@ -70,6 +70,14 @@ dbmt$error<-ifelse(is.na(dbmt$error), mean(dbmt$error, na.rm=TRUE), dbmt$error)
 dbmt$beta<-ifelse(is.na(dbmt$beta), mean(dbmt$beta, na.rm=TRUE), dbmt$beta)
 dbmt$tau<-ifelse(is.na(dbmt$tau), mean(dbmt$tau, na.rm=TRUE), dbmt$tau)
 
+dbmt$error<-ave(dbmt$par1, dbmt$id, FUN=function(x){mean(x)})
+dbmt$beta<-ave(dbmt$par2, dbmt$id, FUN=function(x){mean(x)})
+dbmt$tau<-ave(dbmt$par3, dbmt$id, FUN=function(x){mean(x)})
+dbmt$error<-ifelse(is.na(dbmt$error), mean(dbmt$error, na.rm=TRUE), dbmt$error)
+dbmt$beta<-ifelse(is.na(dbmt$beta), mean(dbmt$beta, na.rm=TRUE), dbmt$beta)
+dbmt$tau<-ifelse(is.na(dbmt$tau), mean(dbmt$tau, na.rm=TRUE), dbmt$tau)
+
+
 dd<-ddply(dbmt, ~id,summarize, tau=mean(exp(tau)),
           beta=mean(exp(beta)), error=mean(exp(error)))
 write.csv(dd, "bmtucbparams.csv")
@@ -142,6 +150,7 @@ for (nid in 1:160){
 write.csv(dcollect, "bmtrecoverydata.csv")
 
 dat<-dcollect
+
 #age groups are 7-8, 9-11, and adults
 dat$agegroup<-ifelse(dat$age<9, "7-8", dat$age)
 dat$agegroup<-ifelse(dat$age>=9 & dat$age <12, "9-11", dat$agegroup)
