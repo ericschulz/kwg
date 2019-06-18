@@ -2,17 +2,6 @@
 ####  Repository for "Searching for rewards like a child means less generalization and more directed exploration"
 ####  Schulz, Wu, Ruggerri and Meder (Psychological Science, 2019)
 
-## Table of Contents
-
-  A. [Walk-throughs: See a detailed walk through of our data analysis](#walkthroughs)
-  B. [Data: Access all the data reported in our paper](#data)
-  C. [Code: Access all the code used to analyze our data](#code)
-  D. [Plots: See every plot produced for our paper](#plots)
-  E. [Experiment: Access the source code for our experiment](#experiment)
-  F. [Paper: Access the tex-code-exploitation](#paper)
-
-
-
 ## Walk-throughs
 
 <a name="walkthroughs"></a>
