@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' ws: 'unsafe-inline' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <title>GridSearch</title>
+
+    <!--<script src="js/jquery-3.2.1.min.js" charset="utf-8"></script>-->
+    <!--<script src="js/jquery-ui.min.js" charset="utf-8"></script>-->
+    <script src="js/d3.v3.min.js" charset="utf-8"></script>
+
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/ui.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/grid2D.css">
+
+    <script type="text/javascript" src="kernelRough.json"></script>
+    <script type="text/javascript" src="kernelSmooth.json"></script>
+</head>
+
+<body>
+    <div class='container' style="width: 95%; height: 95%">
+
+        <!-- User ID form -->
+        <div id="rt-start" class="route">
+            <div id="topbar">GridSearch App v1.0.0 <span id="stats-records"></span> <span id="user-id"></span></div>
+            <h1>Enter your code:</h1>
+            <div class="initial-form">
+                <input type="number" name="uid-input" id="uid-input"><br>
+                <button id="btn-initial-form">Start</button>
+            </div>
+        </div>
+        <!--First page contains Demographic Information -->
+        <div class="tablet" id="page1" style="display:none; width:700px; margin: 15px auto; text-align: center;">
+            <h1 class="text-xl">Erkundungsspiel</h1><br>
+            <h3 class="text-xl">Demographische Daten</h3>
+            <br>
+            <form>
+                <fieldset data-role="Gender" data-type="horizontal">
+                    <legend class="text-l">Geschlecht:</legend>
+                    <input type="radio" name="demographics-gender" id="Male">
+                    <label for="Male" class="text-l">&nbsp; Männlich &nbsp; </label>
+                    <input type="radio" name="demographics-gender" id="Female">
+                    <label for="Female" class="text-l">&nbsp; Weiblich &nbsp; </label>
+                </fieldset> <br><br>
+                <fieldset data-role="Birthdate" data-type="horizontal">
+                    <legend class="text-l">Geburtsdatum:</legend>
+                    <input type="date" id="birthDate" class="form-control">
+                </fieldset><br><br>
+                <fieldset data-role="Grade" data-type="horizontal">
+                    <legend class="text-l">Klasse:</legend>
+                    <select id="gradeSelect" class="text-l">
+                        <option value="0" selected="selected">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                      </select>
+                </fieldset><br>
+            </form>
+        
+            <button class='btn-primary text-xl' type="button" name="button" id="buttonAssignScenario">Start</button>
+        </div>
+
+        <div id="page2" style="display:none; text-align:center;">
+            <div id="instructions" style="display:block">
+                <h3 class="text-xl">Anleitung:</h3>
+                <br>
+                <p class="text-l"> In diesem Spiel zeige ich dir 11 verschiedene Spielfelder. Jedes Spielfeld besteht aus 64
+                    Kästchen. Wenn du auf ein Kästchen klickst, wird dir eine Punktzahl für dieses Kästchen angezeigt.
+                    <br /> <br /> Deine Aufgabe ist es, so viele Punkte wie möglich zu sammeln. <br /> <br /> Am Anfang von
+                    jedem Spielfeld ist ein Kästchen bereits aufgedeckt. Du darfst dann 25-mal klicken, um so viele Punkte
+                    wie möglich zu sammeln. Bei jedem Klick hast du die Wahl zwischen zwei Möglichkeiten: Entweder klickst
+                    du auf ein neues Kästchen, um zu schauen, wieviel Punkte es dafür gibt. Oder du klickst nochmal auf ein
+                    <br><br>Kästchen, dass du schon aufgedeckt hast, um nochmal Punkte dafür zu kriegen. Wenn du das tust, können
+                    sich aber die Punkte dieses Kästchens jedes Mal ein bisschen verändern. Wie viele Klicks du noch übrig
+                    hast wird dir über dem Spielfeld angezeigt. Wenn du alle Klicks aufgebraucht hast, beginnt der nächste
+                    Versuch mit einem neuen Spielfeld. <br /><br /> Um dir ein bisschen zu helfen, sind die Kästchen zusätzlich
+                    farbig markiert. Dunklere Farben entsprechen höheren Punktzahlen. Außerdem bekommst du noch einen wichtigen
+                    Tipp: <b>
+                In den Spielfeldern tauchen hohe Punktzahlen häufig neben anderen hohen Punktzahlen auf und niedrige Punktzahlen häufig neben anderen niedrigen Punktzahlen! </b>                    
+                <b>Die Punktzahl ist also abhängig davon, wo sich das Kästchen im Feld befindet!</b> <br /><br /> Auf jedem Spielfeld
+                    kannst du bis zu 5 Sterne sammeln. Je mehr Punkte du in einer Runde gesammelt hast, desto mehr Sterne
+                    bekommst du. Am Ende des Spiels kannst du die Sterne dann gegen Geld eintauschen. Wie viel Geld du für
+                    deine Sterne bekommst, siehst du in der Tabelle neben dem Tablet. <br /><br /> Hast du die Spielregeln
+                    verstanden? Super, dann kannst du ja mit dem ersten Spielfeld loslegen! Bitte denke daran, du möchtest
+                    so viele Punkte wie möglich sammeln! </p>
+            </div>
+            <div>
+                <button class='btn-primary text-xl' type="button" name="button" id="buttonGoToPageThree">Ich verstehe</button>
+            </div>
+        </div>
+
+
+        <div id="page3" style="display:none;">
+            <br>
+            <h1 class="text-xl"> Bitte beantworte vor Beginn ein paar Fragen zum Spiel </h1>
+
+            <div class="radio">
+                <legend class="text-xl">Was ist deine Aufgabe?</legend>
+                <label class="text-l">
+                <input type="radio" name="q1" id="q1a" value="option1" checked>
+                 &nbsp; &nbsp; Farben lernen
+              </label>
+            </div>
+            <div class="radio">
+                <label class="text-ml">
+                <input type="radio" name="q1" id="q1b" value="option2">
+                 &nbsp;  &nbsp; so viele Punkte wie möglich sammeln
+              </label>
+            </div>
+            <div class="radio">
+                <label class="text-ml">
+                <input type="radio" name="q1" id="q1d" value="option4">
+                 &nbsp;  &nbsp; das Kästchen mit den meisten Punkten finden
+              </label>
+            </div>
+            <div class="radio">
+                <label class="text-ml">
+                <input type="radio" name="q1" id="q1c" value="option3" >
+                 &nbsp;  &nbsp; Keine Ahnung
+              </label>
+            </div>
+
+            <div class="radio">
+                <legend class="text-xl">Wie kannst du Punkte sammeln?</legend>
+            </div>
+
+            <div class="radio">
+                <label class="text-ml">
+                        <input type="radio" name="q2" id="q2a" value="option1" checked>
+                        &nbsp; &nbsp; Indem du nur verdeckte Kästchen anklickst
+                </label>
+            </div>
+
+            <div class="radio">
+                <label class="text-ml">
+                        <input type="radio" name="q2" id="q2b" value="option2">
+                        &nbsp; &nbsp; Indem du nur aufgedeckte Kästchen anklickst
+                </label>
+            </div>
+
+            <div class="radio">
+                <label class="text-ml">
+                        <input type="radio" name="q2" id="q2c" value="option3">
+                        &nbsp; &nbsp; Indem du verdeckte oder aufgedeckte Kästchen anklickst
+                </label>
+            </div>
+
+
+            <div class="radio">
+                <legend class="text-xl">Wie werden die Punkte verteilt?</legend>
+                <label class="text-l">
+                <input type="radio" name="q3" id="q3a" value="option1" checked>
+                 &nbsp;  &nbsp; Zufällig
+              </label>
+            </div>
+            <div class="radio">
+                <label class="text-ml">
+                <input type="radio" name="q3" id="q3b" value="option2">
+                 &nbsp;  &nbsp; Hohe Punktzahlen sind <strong>niemals</strong> nebeneinander
+              </label>
+            </div>
+            <div class="radio">
+                <label class="text-ml">
+                <input type="radio" name="q3" id="q3c" value="option3" >
+                 &nbsp;  &nbsp; Hohe Punktzahlen sind <strong>immer</strong> in der gleichen Gegend
+              </label>
+            </div>
+            <div class="radio">
+                <label class="text-ml">
+                <input type="radio" name="q3" id="q3d" value="option3" >
+                 &nbsp;  &nbsp; Hohe Punktzahlen sind <strong>häufig</strong> in der selben Gegend
+
+              </label>
+            </div><br>
+
+            <p class="text-l"> Nur wenn du alle Fragen richtig beantwortet hast, kannst du mit dem Spiel beginnen.</p>
+            <div>
+                <button class='btn-primary text-xl' type="button" name="button" id="buttonInstructionsCheck">Antworten überprüfen</button>
+            </div>
+        </div>
+
+
+        <div id="page4" style="display:none; text-align:center;">
+            <br><br><br><br><br><br><br><br><br><br><br><br>
+
+            <h1 class="text-xxl">Wow! Das hast du super gemacht! Du hast alle Fragen richtig beantwortet und kannst nun mit dem Spiel beginnen.</h1>
+            <br><br>
+
+
+
+            <button class='btn-primary text-xl' type="button" name="button" id="buttonGoToPageFive">Start</button>
+
+
+        </div>
+
+
+
+
+        <!--Experiment Begins -->
+        <div id="page5" style="width: 100%; overflow: hidden; display:none">
+            <br><br>
+            <div id="gridDiv">
+                <table id='grid' class='grid'>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div id="alertGridDiv" style="display:none">
+                <h2>Bonusrunde!</h2>
+                <p class="text-xl">
+                    Ich werde dir jetzt Fragen zu fünf verschiedenen Kästchen stellen, die du noch nicht aufgedeckt hast. 
+                    Für jedes Kästchen sollst du einschätzen, wie viele Punkte du dafür bekommen würdest, wenn du darauf klickst. 
+                    Danach kannst du eines von den fünf Kästchen aufdecken und das Spiel geht normal weiter.
+                    <br><br>
+                    Danach kannst du wie gewohnt weiterspielen, bis alle 25 Klicks aufgebraucht sind.
+                    
+                </p><br><br>
+                <button class='btn-primary text-xl' type="button" name="button" id="buttonGoToBonusLevel">Weiter</button>
+            </div>
+
+
+
+            <div id="progress">
+                <font class="text-xl" color="green"><b><div id="scoretotal"></div></b></font>
+                <div class="text-xl" id="remaining1">Verbleibende Spielfelder: <b>11</b></div>
+                <div class="text-xl" id="remaining2">Verbleibende Klicks: <b>25</b></div>
+
+                <div id="sidebarInstructions">
+                    <br>
+
+                    <p id="sidebarInstructions-1" class="text-l">
+                        In diesem Spiel zeige ich dir 9 solche Spielfelder. <br><br> 
+                        Am Anfang von jedem Spielfeld ist ein Kästchen bereits aufgedeckt. <br><br> 
+                        Wenn du auf ein Kästchen klickst, wird dir eine Punktzahl für dieses Kästchen angezeigt. <br><br> 
+                        In jeder Runde hast du 25 Klicks um so viele Punkte wie möglich zu sammeln!
+                    </p>
+
+                    <p id="sidebarInstructions-2" class="text-m" style="display:none">
+                        Jetzt kannst du das ganze kurz ausprobieren!
+                        <br><br> 
+                        Vor jedem Klick mußt du dich entscheiden: Entweder deckst du ein neues Kästchen auf oder du klickst 
+                        nochmal auf ein bereits aufgedecktes Kästchen. Wenn du ein neues Kästchen aufdeckst, weißt du noch nicht, 
+                        wie viele Punkte du bekommst, aber du kannst neue Kästchen mit vielen Punkten finden. Wenn du ein Kästchen 
+                        anklickst, was bereits aufgedeckt ist, kann sich die Punktzahl leicht verändern, aber wird ungefähr gleich bleiben.
+                        <br><br> 
+                        Außerdem verrate ich dir noch einen wichtigen Tipp:
+                        In den Spielfeldern tauchen hohe Punktzahlen häufig neben anderen hohen Punktzahlen auf und 
+                        niedrige Punktzahlen häufig neben anderen niedrigen Punktzahlen! Die Punktzahl ist also abhängig 
+                        davon, wo sich das Kästchen im Feld befindet!
+                           
+                    </p> 
+
+                    <p id="sidebarInstructions-3" class="text-l" style="display:none">
+                            <b>Super!</b><br> Das hast du schon sehr gut gemacht! In den nächsten Runden kannst du auf jedem Spielfeld bis 
+                            zu 5 Sterne sammeln. Je mehr Punkte du sammelst, desto mehr Sterne bekommst du. Am Ende des Spiels 
+                            kannst du die Sterne dann gegen einen kleinen Betrag Geld eintauschen.
+                            <br><br>
+                            <b>Hast du alles verstanden?</b>  
+                    </p>
+
+                    <br>
+                    <button class='btn-primary text-xl' type="button" id="buttonInstructions">Weiter</button>
+                </div>
+
+                <div id="sidebarContent" style="display:none">
+                    <div class="text-xl"><b>Sterne gesammelt:</b></div>
+
+
+                    <div id="stars">
+
+                    </div>
+                </div>
+                
+
+                <br><br><br>
+                <div class="text-l" id="bonusSidebarInstructions" style="display:none; padding:5px; border: 3px dashed orange;">
+                    <h2>Bonusrunde!</h2>
+                    In dieser Bonusrunde kannst du erstmal nur 15 Kästchen aufdecken, um wie gewohnt 
+                    so viele Punkte wie möglich zu sammeln.
+                    <br><br>
+                    Danach werde ich dir einige Fragen stellen und dann kannst du wie gewohnt weiterspielen, bis alle 25 Klicks aufgebraucht sind.
+                </div>
+
+                <div class="text-l" id="bonusSidebarInstructions2" style="display:none; padding:5px; border: 3px dashed orange;">
+                    <h2>Bonusrunde!</h2>
+                    Jetzt kannst du diese Runde wie gewohnt zu Ende spielen. Denk daran, 
+                    du möchtest so viele Punkte wie möglich sammeln!
+                </div>
+
+            </div>
+
+            <div id="bonusProgress" style="display:none">
+
+                <h2>Bonusrunde</h2>
+                <div id="bonusInstructions">
+                    <br>
+                    <p class="text-l">Verbleibende Kästchen: <span id="bonusRemainingCounter">5</span></p>
+                    <br>
+                    <p class="text-xl">
+                        Wie viele Punkte bekommst du wenn du hier klickst? Was glaubst du?
+                    </p>
+
+                    <input id="valueSlider" type="range" min="0" max="50" step="1" oninput="onValueSliderChange(this.value)" onchange="onValueSliderChange(this.value)">
+                    <div class="text-l">
+                        wenige
+                        <span class="spacer" style="width: 211px; display: inline-block;"></span> viele
+                    </div>
+
+
+                    <br><br>
+                    <p class="text-xl">Wie sicher bist du dir?</p>
+
+                    <br>
+
+                    <input id="confidenceSlider" type="range" min="0" max="10" step="1" oninput="onConfidenceSliderChange(this.value)" onchange="onConfidenceSliderChange(this.value)">
+
+                    <div class="text-l">
+                        gar nicht
+                        <span class="spacer" style="width: 137px; display: inline-block;"></span> ganz sicher
+                    </div>
+
+
+                    <br><br><br>
+                    <button class='btn-primary text-xl' type="button" name="button" id="buttonNextBonus">Weiter</button>
+                </div>
+
+                <div id="bonusInstructions2" style="display:none">
+                    <br><br>
+                    <p class="text-xl">
+                        Du kannst jetzt eins der fünf Kästchen aufdecken. Für welches entscheidest du dich?
+                    </p>
+
+                </div>
+
+
+            </div>
+        </div>
+
+
+
+
+
+        <div id="page5finished" style="display:none; text-align: center;">
+
+            <div id="trials"> Du hast dieses Spielfeld erkundet. Es liegen noch 9 Spielfelder vor dir.</div>
+
+            <br><br>
+
+            <div class="text-l" id="bonusIntroInstructions" style="display:none; padding:5px; border: 3px dashed orange;">
+                    <h2>Bonusrunde!</h2>
+                    In dieser Bonusrunde kannst du erstmal nur 15 Kästchen aufdecken, um wie gewohnt so viele Punkte wie 
+                    möglich zu sammeln. Nachdem du 15-mal geklickt hast, werde ich dir fünf noch nicht aufgedeckte Kästchen 
+                    zeigen. Für jedes dieser Kästchen sollst du schätzen, wie viele Punkte du bekommen würdest, wenn du es 
+                    anklickst. Schau, ob du alle richtig einschätzen kannst!
+                    <br><br>
+                    Danach werde ich dir einige Fragen stellen und dann kannst du wie gewohnt weiterspielen, bis alle 25 Klicks aufgebraucht sind.
+                </div>
+    
+                <br><br>
+
+
+            <button class='btn-primary text-xl' type="button" id="nextTrialButton">Weiter</button>
+
+        </div>
+
+        <div id="page6" style="display:none; text-align: center;">
+            <div id="thanksforcompleting">
+                <h1>
+                    <font size="4">Vielen Dank für die Teilnahme.</font>
+                </h1>
+            </div>
+            <br>
+            <button class='btn-primary text-xl' type="button" id="goToPage7">Fertig</button>
+
+        </div>
+
+        <div id="page7" style="display:none; text-align: center;">
+
+            <h2 class="text-xxl">Tester notes</h2>
+            <br>
+
+            <h3 class="text-xl">Option A: </h3>
+            <input type="radio" id="otpion-a-true" name="option-a" value="1"> <span class="text-l" style="padding-right: 50px">&nbsp;&nbsp; TRUE</span> 
+            <input type="radio" id="option-a-false" name="option-a" value="0"> <span class="text-l">&nbsp;&nbsp; FALSE</span>
+            <br>
+
+            <h3 class="text-xl">Notes: </h3>
+            <textarea name="tester-notes" id="tester-notes" cols="80" rows="4"></textarea>
+
+            <br><br>
+            <button class='btn-primary text-xl' type="button" id="finishButton">Save and Finish</button>
+
+        </div>
+
+        <!-- End screen -->
+        <div id="rt-end" class="route">
+            <h1>END</h1>
+            <p id="debug-out"></p>
+            <br><br>
+            <button id="btn-app-restart" onclick="location.reload();">Restart App</button>
+        </div>
+
+
+    </div>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/isrc-utils.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/gridSearch.js"></script>
+</body>
+
+</html>

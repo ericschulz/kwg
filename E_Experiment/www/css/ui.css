@@ -1,0 +1,78 @@
+div#topbar {
+    width: calc(100% - 10px);
+    height: 20px;
+    background: black;
+    color: white;
+    padding-top: 0;
+    padding-left: 10px;
+    z-index: 999;
+}
+
+#user-id {
+    padding-left: 40px;
+}
+
+#stats-records {
+    padding-left: 40px;
+}
+
+.hidden {
+    display: none;
+}
+
+button,
+#btn-initial-form,
+#btn-app-restart {
+    font-size: x-large;
+    background: seagreen;
+    color: white;
+    padding: 18px;
+    text-transform: uppercase;
+}
+
+.answer-buttons button {
+    padding: 40px;
+}
+
+#rt-start h1 {
+    margin-top: 100px;
+    margin-bottom: 50px;
+}
+
+div.initial-form {
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}
+
+div.initial-form input {
+    margin-bottom: 35px;
+    font-size: xx-large;
+    background: #E4E4E4;
+    border: 5px solid white;
+}
+
+#debug-out {
+    font-size: large;
+    color: darkblue;
+    margin-left: 10px;
+}
+
+.route h1 {
+    margin-top: 70px;
+    margin-bottom: 30px;
+}
+
+textarea {
+    margin-bottom: 35px;
+    font-size: xx-large;
+    background: #E4E4E4;
+    border: 5px solid white;
+}
+
+select {
+    margin-bottom: 35px;
+    font-size: xx-large;
+    background: #E4E4E4;
+    border: 5px solid white;
+}

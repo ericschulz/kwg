@@ -1,0 +1,31 @@
+.route {
+    text-align: center;
+}
+
+#rt-choose-instructor img,
+#rt-ask-help img {
+    display: inline-block;
+    width: 330px;
+    padding: 20px;
+    cursor: pointer;
+}
+
+#rt-play-video {
+    margin-top: -150px;
+    z-index: 1;
+}
+
+#rt-play-video video {
+    width: 100%    !important;
+    height: auto   !important;
+}
+
+#rt-show-toy img {
+    width: 400px;
+    margin-bottom: 20px;
+}
+
+#rt-quiz img {
+    width: 220px;
+    padding: 3px;
+}

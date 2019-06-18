@@ -50,9 +50,12 @@
 <a name="plots"></a>
 - [2](#plots) **Bonus plot**: Figure 2 in our manuscript, showing the bonus round results.
  
-## Experiment
+## E. Experiment
+- [1]. Install cordova: `npm install -g cordova`
+- [2]. Navigate to ~/tablet/www/ and add browser to the cordova environment: `cordova platform add browser`
+- [3]. run the experiment: `cordova run browser`
 
-## Paper
+## F. Paper
 
 <a name="plots"></a>
 - [1](#paper) **Manuscript**: Full manuscript as pdf-file. This can also be found on [Biorxiv](https://www.biorxiv.org/content/10.1101/327593v2 "Searching for rewards like a child means less generalization and more directed exploration") 
