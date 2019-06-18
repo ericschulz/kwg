@@ -1,6 +1,6 @@
 # Kids with grids
 ####  Repository for "Searching for rewards like a child means less generalization and more directed exploration"
-####  Schulz, Wu, Ruggerri and Meder (Psychological Science, 2019)
+####  Schulz, Wu, Ruggeri and Meder (Psychological Science, 2019)
 
 ## A: Walk-throughs
 
@@ -8,7 +8,10 @@
 - [1] **Behavioral Results**: Walks you through all of the reported behavioral results, i.e. every single test reported in our paper, including effect sizes and Bayes Factors.
 
 <a name="walkthroughs"></a>
-- [2] **Behavioral Results**: Walks you through all of the reported behavioral results, i.e. every single test reported in our paper, including effect sizes and Bayes Factors.
+- [2] **Bonus round results**: Walks you through the reported bonus round results, i.e. all of the tests reported in our paper concerning the 10 round including effect sizes and Bayes Factors.
+
+<a name="walkthroughs"></a>
+- [3] **Modeling results**: Walks you through the reported modeling results, i.e. all of the tests reported in our paper concerning the modeling and parameter estimate results including effect sizes and Bayes Factors.
 
 ## Data
 
