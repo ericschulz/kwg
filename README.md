@@ -31,25 +31,25 @@
 - [1](#code) **Behavioral tests**: This contains all of the behavioral tests performed in our manuscript, including effect sizes and Bayes factors.
    
 <a name="code"></a>
-- [2](#code) **Bonus round tests**:This contains all of the bonus round tests performed in our manuscript, including effect sizes and Bayes factors.
+- [2](#code) **Bonus round tests**: This contains all of the bonus round tests performed in our manuscript, including effect sizes and Bayes factors.
 
 <a name="code"></a>
-- [3](#code) **Model comparison**:This contains all of the model comparisons performed in our manuscript, including effect sizes and Bayes factors.
+- [3](#code) **Model comparison**: This contains all of the model comparisons performed in our manuscript, including effect sizes and Bayes factors.
 
 <a name="code"></a>
-- [4](#code) **Cross validation**:This contains the full cross validation code to compare all of the models based on there leave-one-round-out cross validation error. `NOTE:` You will need a cluster to run this, because it will otherwise take too long.
+- [4](#code) **Cross validation**: This contains the full cross validation code to compare all of the models based on there leave-one-round-out cross validation error. `NOTE:` You will need a cluster to run this, because it will otherwise take too long.
 
 <a name="code"></a>
 - [5](#code) **Models**:This contains the code for all the learning models and sampling strategies applied in our manuscript and SI.
 
-## Plots
+## D: Plots
 
 <a name="plots"></a>
-- [1](#plots) **Gaussian process learning theory**: Always model your enums as uppercase string constants, e.g. `"WAITING"`, `"IN_PROGRESS"` and `"COMPLETED"`
+- [1](#plots) **Main plot**: Figure 1 in our manuscript, showing all behavioral and modeling results.
    
-<a name="functionstats--func"></a>
-- [4.2](#plots) **Deriving theoretical peridctions**: Don't use `null`, `undefined`, or any value except upper case string constants in your enums. This includes initial, undecided or unknown states
-
+<a name="plots"></a>
+- [2](#plots) **Bonus plot**: Figure 2 in our manuscript, showing the bonus round results.
+ 
 ## Experiment
 
 ## Paper
